@@ -1,6 +1,7 @@
 import { Provider } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Client, GatewayIntentBits } from 'discord.js'
+import { DISCORD_TOKEN } from 'src/env-vars.constants'
 
 function clientFactory(cfg: ConfigService) {
   return new Promise((resolve, reject) => {
@@ -10,7 +11,7 @@ function clientFactory(cfg: ConfigService) {
       resolve(client)
     })
 
-    client.login(cfg.getOrThrow('DISCORD_TOKEN')).catch((e) => reject(e))
+    client.login(cfg.getOrThrow(DISCORD_TOKEN)).catch((e) => reject(e))
   })
 }
 
