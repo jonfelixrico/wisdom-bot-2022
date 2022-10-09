@@ -23,7 +23,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
         content: interaction.options.getString('quote'),
       })
 
-      interaction.reply({
+      await interaction.reply({
         ephemeral: true,
         content: 'Ogey 👍',
       })
@@ -33,7 +33,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       )
     } catch (e) {
       this.LOGGER.error(e.message)
-      interaction.reply({
+      await interaction.reply({
         ephemeral: true,
         content:
           'Oops! Something went wrong while processing your submission. Try again later maybe?',
