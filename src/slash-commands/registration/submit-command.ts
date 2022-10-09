@@ -15,6 +15,7 @@ export function buildSubmitCommand(): CommandToRegister {
       return option
         .setName('autor')
         .setDescription('The user who said the quote')
+        .setRequired(true)
     })
 
   return {
