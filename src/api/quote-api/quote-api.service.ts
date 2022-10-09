@@ -10,7 +10,7 @@ export class QuoteApiService {
 
   async receive({ serverId, quoteId, ...others }: ReceiveQuoteInput) {
     const req$ = this.http.post<void>(
-      `server/${serverId}/quote/${quoteId}`,
+      `server/${serverId}/quote/${quoteId}/receive`,
       others,
     )
 
