@@ -39,6 +39,6 @@ const builder = new SlashCommandBuilder()
   })
 
 export const RECEIVE_COMMAND: CommandToRegister = {
-  name: 'receive',
+  name: 'classic',
   builder,
 }
