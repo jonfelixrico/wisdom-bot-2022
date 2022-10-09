@@ -5,11 +5,13 @@ import { CommandBuilder, CommandToRegister } from '../registration.types'
 import { SUBMIT_COMMAND } from '../submit.command'
 import { Client, REST, Routes } from 'discord.js'
 import { ConfigService } from '@nestjs/config'
+import { WISDOM_SUBCOMMANDS } from '../wisdom.subcommands'
 
 const TO_REGISTER: CommandToRegister[] = [
   RECEIVE_COMMAND,
   SUBMIT_COMMAND,
   ABOUT_COMMAND,
+  WISDOM_SUBCOMMANDS,
 ]
 
 @Injectable()
