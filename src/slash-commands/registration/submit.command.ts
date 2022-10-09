@@ -9,6 +9,7 @@ const builder = new SlashCommandBuilder()
       .setName('quote')
       .setDescription('The quote to be added')
       .setRequired(true)
+      .setMinLength(1)
   })
   .addUserOption((option) => {
     return option
