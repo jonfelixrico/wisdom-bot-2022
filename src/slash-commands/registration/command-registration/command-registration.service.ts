@@ -6,6 +6,10 @@ import { SUBMIT_COMMAND } from '../submit.command'
 import { Client, REST, Routes } from 'discord.js'
 import { ConfigService } from '@nestjs/config'
 import { WISDOM_SUBCOMMANDS } from '../wisdom.subcommands'
+import {
+  REGISTER_GUILDS_ONLY,
+  REGISTER_GUILD_IDS,
+} from 'src/env-vars.constants'
 
 const TO_REGISTER: CommandToRegister[] = [
   RECEIVE_COMMAND,
@@ -21,14 +25,12 @@ export class CommandRegistrationService implements OnApplicationBootstrap {
   constructor(private client: Client, private cfg: ConfigService) {}
 
   private getGuildIds() {
-    const serializedIds = this.cfg.get<string>('REGISTER_GUILD_IDS') ?? ''
+    const serializedIds = this.cfg.get<string>(REGISTER_GUILD_IDS) ?? ''
     return serializedIds.split(',').map((s) => s.trim())
   }
 
   private get registerToGuildsOnly() {
-    return (
-      this.cfg.get<string>('REGISTER_GUILDS_ONLY')?.toLowerCase() === 'true'
-    )
+    return this.cfg.get<string>(REGISTER_GUILDS_ONLY)?.toLowerCase() === 'true'
   }
 
   private get restClient() {
