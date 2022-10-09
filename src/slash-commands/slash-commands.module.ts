@@ -4,6 +4,7 @@ import { ReceiveHandlerService } from './handlers/receive-handler/receive-handle
 import { DiscordModule } from 'src/discord/discord.module'
 import { CommandRegistrationService } from './registration/command-registration/command-registration.service'
 import { INTERACTION_EVENT_BUS_PROVIDER } from './providers/interaction-event-bus/interaction-event-bus.provider'
+import { AboutHandlerService } from './handlers/about-handler/about-handler.service'
 
 @Module({
   providers: [
@@ -11,6 +12,7 @@ import { INTERACTION_EVENT_BUS_PROVIDER } from './providers/interaction-event-bu
     ReceiveHandlerService,
     CommandRegistrationService,
     INTERACTION_EVENT_BUS_PROVIDER,
+    AboutHandlerService,
   ],
   imports: [DiscordModule],
 })
