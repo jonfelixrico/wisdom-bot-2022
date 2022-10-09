@@ -5,5 +5,7 @@ export interface CommandToRegister {
    * Devland name of the command.
    */
   name: string
-  builder: SlashCommandBuilder
+  builder:
+    | SlashCommandBuilder
+    | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
 }
