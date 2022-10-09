@@ -38,7 +38,7 @@ const builder = new SlashCommandBuilder()
       })
   })
 
-export const RECEIVE_COMMAND: CommandToRegister = {
+export const WISDOM_SUBCOMMANDS: CommandToRegister = {
   name: 'classic',
   builder,
 }
