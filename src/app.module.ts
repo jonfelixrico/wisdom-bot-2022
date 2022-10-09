@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
+import { SlashCommandsModule } from './slash-commands/slash-commands.module'
 
 @Module({
-  imports: [],
+  imports: [SlashCommandsModule],
   controllers: [],
   providers: [],
 })
