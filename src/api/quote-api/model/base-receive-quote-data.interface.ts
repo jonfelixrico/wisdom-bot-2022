@@ -1,4 +1,4 @@
 export interface BaseReceiveQuoteData {
   channelId: string
-  receiverid: string
+  receiverId: string
 }
