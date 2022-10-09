@@ -32,7 +32,7 @@ const builder = new SlashCommandBuilder()
       })
       .addUserOption((option) => {
         return option
-          .setName('autor')
+          .setName('author')
           .setDescription('The user who said the quote')
           .setRequired(true)
       })
