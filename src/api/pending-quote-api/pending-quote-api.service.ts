@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import {
   SubmitQuoteInput,
@@ -8,8 +8,6 @@ import {
 
 @Injectable()
 export class PendingQuoteApiService {
-  private readonly LOGGER = new Logger(PendingQuoteApiService.name)
-
   constructor(private http: HttpService) {}
 
   async submit({ serverId, ...others }: SubmitQuoteInput) {
