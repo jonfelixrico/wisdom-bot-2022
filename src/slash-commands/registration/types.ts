@@ -1,4 +1,7 @@
-import { SlashCommandBuilder } from 'discord.js'
+import {
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from 'discord.js'
 
 export interface CommandToRegister {
   /**
@@ -8,4 +11,5 @@ export interface CommandToRegister {
   builder:
     | SlashCommandBuilder
     | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
+    | SlashCommandSubcommandsOnlyBuilder
 }
