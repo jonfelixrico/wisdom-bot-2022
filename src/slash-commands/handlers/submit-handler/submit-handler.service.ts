@@ -23,6 +23,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
         content: interaction.options.getString('quote'),
       })
 
+      // TODO implement a proper response
       await interaction.reply({
         ephemeral: true,
         content: 'Ogey 👍',
