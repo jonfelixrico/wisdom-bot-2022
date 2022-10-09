@@ -1,4 +1,4 @@
-import { CommandToRegister } from './types'
+import { CommandToRegister } from './registration.types'
 import { SlashCommandBuilder } from 'discord.js'
 
 const builder = new SlashCommandBuilder()

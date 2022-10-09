@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js'
-import { CommandToRegister } from './types'
+import { CommandToRegister } from './registration.types'
 
 const builder = new SlashCommandBuilder()
   .setName('submit')
