@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config'
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.development.env',
+      envFilePath: ['.env', '.development.env'],
     }),
     SlashCommandsModule,
     DiscordModule,
