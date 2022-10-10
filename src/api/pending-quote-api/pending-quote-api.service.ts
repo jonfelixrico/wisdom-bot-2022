@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
-import { FinalizeMessageIdInput } from './model/finalize-message-id-io.interface'
 import {
   SubmitQuoteInput,
   SubmitQuoteOutput,
@@ -19,20 +18,5 @@ export class PendingQuoteApiService {
 
     const { data } = await firstValueFrom(req$)
     return data
-  }
-
-  async finalizeMessageId({
-    serverId,
-    quoteId,
-    messageId,
-  }: FinalizeMessageIdInput) {
-    const req$ = this.http.post(
-      `server/${serverId}/quote/pending/${quoteId}/messageId`,
-      {
-        messageId,
-      },
-    )
-
-    await firstValueFrom(req$)
   }
 }
