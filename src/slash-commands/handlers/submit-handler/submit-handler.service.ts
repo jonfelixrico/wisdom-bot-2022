@@ -19,19 +19,26 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
         submitterId: interaction.user.id,
         channelId: interaction.channelId,
         serverId: interaction.guildId,
-        messageId: null,
         content: interaction.options.getString('quote'),
-      })
-
-      // TODO implement a proper response
-      await interaction.reply({
-        ephemeral: true,
-        content: 'Ogey 👍',
       })
 
       this.LOGGER.log(
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
+
+      // TODO implement a proper response
+      const message = await interaction.reply({
+        content: 'Submitted quote',
+        fetchReply: true,
+      })
+
+      await this.api.finalizeMessageId({
+        serverId: interaction.guildId,
+        messageId: message.id,
+        quoteId,
+      })
+
+      this.LOGGER.debug(`Finalized the message id for quote ${quoteId}`)
     } catch (e) {
       this.LOGGER.error(e.message)
       await interaction.reply({
