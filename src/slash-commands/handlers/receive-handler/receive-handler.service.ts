@@ -9,12 +9,22 @@ export class ReceiveHandlerService {
 
   private async handle(interaction: ChatInputCommandInteraction) {
     const { guildId } = interaction
+
+    // TODO accept user id parameter
     const randomQuote = await this.api.getRandomQuote(guildId)
 
-    if (!randomQuote) {
+    const user = interaction.options.getUser('user')
+    if (!randomQuote && user) {
       await interaction.reply({
         ephemeral: true,
-        content: 'Sorry, but your Discord server has no approved quotes yet.',
+        content: `${user} has no quotes eligible for receiving.`,
+      })
+      return
+    } else if (!randomQuote) {
+      await interaction.reply({
+        ephemeral: true,
+        content:
+          "Your Discord server doesn't have any quotes eligible for receiving.",
       })
       return
     }
