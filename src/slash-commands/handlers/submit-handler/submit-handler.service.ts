@@ -13,6 +13,11 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
   ) {}
 
   private async handle(interaction: ChatInputCommandInteraction) {
+    const message = await interaction.reply({
+      content: 'Submitted quote (loading)',
+      fetchReply: true,
+    })
+
     try {
       const { quoteId } = await this.api.submit({
         authorId: interaction.options.getUser('author').id,
@@ -20,32 +25,17 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
         channelId: interaction.channelId,
         serverId: interaction.guildId,
         content: interaction.options.getString('quote'),
+        messageId: message.id,
       })
-
       this.LOGGER.log(
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
-
-      // TODO implement a proper response
-      const message = await interaction.reply({
-        content: 'Submitted quote',
-        fetchReply: true,
-      })
-
-      await this.api.finalizeMessageId({
-        serverId: interaction.guildId,
-        messageId: message.id,
-        quoteId,
-      })
-
-      this.LOGGER.debug(`Finalized the message id for quote ${quoteId}`)
     } catch (e) {
-      this.LOGGER.error(e.message)
-      await interaction.reply({
-        ephemeral: true,
-        content:
-          'Oops! Something went wrong while processing your submission. Try again later maybe?',
-      })
+      this.LOGGER.error('Error encountered while submitting: ', e)
+      await message.edit(
+        'An error was encountered while trying to submit the quote.',
+      )
+      return
     }
   }
 

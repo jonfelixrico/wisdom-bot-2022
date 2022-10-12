@@ -1,7 +1,6 @@
 import { BaseSubmitQuoteData } from './base-submit-quote-data.interface'
 
-export interface SubmitQuoteInput
-  extends Omit<BaseSubmitQuoteData, 'messageId'> {
+export interface SubmitQuoteInput extends BaseSubmitQuoteData {
   serverId: string
 }
 
