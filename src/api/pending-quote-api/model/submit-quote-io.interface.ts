@@ -1,7 +1,10 @@
-import { BaseSubmitQuoteData } from './base-submit-quote-data.interface'
-
-export interface SubmitQuoteInput extends BaseSubmitQuoteData {
+export interface SubmitQuoteInput {
   serverId: string
+  content: string
+  authorId: string
+  submitterId: string
+  channelId: string
+  messageId: string
 }
 
 export interface SubmitQuoteOutput {

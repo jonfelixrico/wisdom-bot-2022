@@ -1,6 +1,6 @@
-import { BaseReceiveQuoteData } from './base-receive-quote-data.interface'
-
-export interface ReceiveQuoteInput extends BaseReceiveQuoteData {
+export interface ReceiveQuoteInput {
   quoteId: string
   serverId: string
+  channelId: string
+  receiverId: string
 }
