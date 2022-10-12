@@ -3,6 +3,7 @@ import { SlashCommandsModule } from './slash-commands/slash-commands.module'
 import { DiscordModule } from './discord/discord.module'
 import { ConfigModule } from '@nestjs/config'
 import { SystemModule } from './system/system.module'
+import { ApiModule } from './api/api.module'
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SystemModule } from './system/system.module'
     SlashCommandsModule,
     DiscordModule,
     SystemModule,
+    ApiModule,
   ],
   controllers: [],
   providers: [],

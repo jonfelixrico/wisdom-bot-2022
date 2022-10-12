@@ -6,6 +6,7 @@ import { CommandRegistrationService } from './registration/command-registration/
 import { INTERACTION_EVENT_BUS_PROVIDER } from './providers/interaction-event-bus/interaction-event-bus.provider'
 import { AboutHandlerService } from './handlers/about-handler/about-handler.service'
 import { SystemModule } from 'src/system/system.module'
+import { ApiModule } from 'src/api/api.module'
 
 @Module({
   providers: [
@@ -15,6 +16,6 @@ import { SystemModule } from 'src/system/system.module'
     INTERACTION_EVENT_BUS_PROVIDER,
     AboutHandlerService,
   ],
-  imports: [DiscordModule, SystemModule],
+  imports: [DiscordModule, SystemModule, ApiModule],
 })
 export class SlashCommandsModule {}
