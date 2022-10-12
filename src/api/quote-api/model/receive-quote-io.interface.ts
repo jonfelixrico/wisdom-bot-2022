@@ -3,4 +3,5 @@ export interface ReceiveQuoteInput {
   serverId: string
   channelId: string
   receiverId: string
+  messageId: string
 }

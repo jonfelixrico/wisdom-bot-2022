@@ -29,13 +29,16 @@ export class ReceiveHandlerService {
       return
     }
 
-    // TODO implement a proper response
-    await interaction.reply(JSON.stringify(randomQuote))
+    const reply = await interaction.reply({
+      fetchReply: true,
+      content: JSON.stringify(randomQuote),
+    })
     await this.api.receive({
       serverId: guildId,
       channelId: interaction.channelId,
       quoteId: randomQuote.id,
       receiverId: interaction.user.id,
+      messageId: reply.id,
     })
   }
 
