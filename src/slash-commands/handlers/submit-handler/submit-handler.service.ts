@@ -30,6 +30,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       this.LOGGER.log(
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
+      message.edit('Submitted quote')
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
       await message.edit(
