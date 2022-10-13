@@ -10,10 +10,10 @@ export class ReceiveHandlerService {
   private async handle(interaction: ChatInputCommandInteraction) {
     const { guildId } = interaction
 
-    // TODO accept user id parameter
-    const randomQuote = await this.api.getRandomQuote(guildId)
-
     const user = interaction.options.getUser('user')
+
+    // TODO accept user id parameter
+    const randomQuote = await this.api.getRandomQuote(guildId, user?.id)
     if (!randomQuote && user) {
       await interaction.reply({
         ephemeral: true,
