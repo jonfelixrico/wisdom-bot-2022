@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ChatInputCommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, DiscordAPIError, Guild } from 'discord.js'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
 import {
@@ -13,6 +13,18 @@ export class ReceiveHandlerService {
   private readonly LOGGER = new Logger(ReceiveHandlerService.name)
 
   constructor(private bus: InteractionEventBus, private api: QuoteApiService) {}
+
+  private async getUser(guild: Guild, userId: string) {
+    try {
+      return await guild.members.fetch(userId)
+    } catch (e) {
+      this.LOGGER.warn(
+        `Error encountered while trying to fetch user data for ${userId}`,
+        e,
+      )
+      return null
+    }
+  }
 
   private async handle(interaction: ChatInputCommandInteraction) {
     const { guildId } = interaction
@@ -36,6 +48,7 @@ export class ReceiveHandlerService {
       return
     }
 
+    const author = await this.getUser(interaction.guild, randomQuote.authorId)
     const responseData: ReplyData = {
       ...randomQuote,
       receiverId: interaction.user.id,
@@ -43,6 +56,7 @@ export class ReceiveHandlerService {
       // TODO retrieve author icon url
 
       receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
+      quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
     }
 
     const reply = await interaction.reply({
