@@ -17,9 +17,17 @@ export class QuoteApiService {
     await firstValueFrom(req$)
   }
 
-  async getRandomQuote(serverId: string): Promise<GetRandomQuoteOutput> {
+  async getRandomQuote(
+    serverId: string,
+    authorId?: string,
+  ): Promise<GetRandomQuoteOutput> {
     const req$ = this.http.get<GetRandomQuoteOutput>(
       `server/${serverId}/quote/random`,
+      {
+        params: {
+          authorId,
+        },
+      },
     )
 
     const { data } = await firstValueFrom(req$)
