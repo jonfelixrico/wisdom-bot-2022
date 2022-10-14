@@ -28,12 +28,14 @@ export function generateResponse(data: Data) {
 
 export function generateErrorResponse(data: Data) {
   const embed = generateResponse(data)
+
   embed.fields = [
     {
       name: SPACE_CHARACTER,
       value: '⚠️ An error was encountered, so this receive was not saved',
     },
   ]
+  embed.author.name = '⚠️ Quote Received'
 
   return embed
 }
