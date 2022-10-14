@@ -1,15 +1,17 @@
 import { APIEmbed, escapeMarkdown } from 'discord.js'
 
-interface Data {
-  content
-  authorId
-  year
-  receiverId
+export interface ReplyData {
+  content: string
+  authorId: string
+  year: number
+  receiverId: string
+  receiverIconUrl?: string
+  quoteAuthorIconUrl?: string
 }
 
 const SPACE_CHARACTER = '\u200B'
 
-export function generateResponse(data: Data) {
+export function generateReply(data: ReplyData) {
   const embed: APIEmbed = {
     description: [
       `**"${escapeMarkdown(data.content)}"**`,
@@ -20,14 +22,19 @@ export function generateResponse(data: Data) {
 
     author: {
       name: 'Quote Received',
+      icon_url: data.receiverIconUrl,
+    },
+
+    thumbnail: {
+      url: data.quoteAuthorIconUrl,
     },
   }
 
   return embed
 }
 
-export function generateErrorResponse(data: Data) {
-  const embed = generateResponse(data)
+export function generateErrorReply(data: ReplyData) {
+  const embed = generateReply(data)
 
   embed.fields = [
     {

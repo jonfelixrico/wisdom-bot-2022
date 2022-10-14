@@ -3,8 +3,9 @@ import { ChatInputCommandInteraction } from 'discord.js'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
 import {
-  generateErrorResponse,
-  generateResponse,
+  generateErrorReply,
+  generateReply,
+  ReplyData,
 } from './receive-presentation-util'
 
 @Injectable()
@@ -35,15 +36,18 @@ export class ReceiveHandlerService {
       return
     }
 
-    const responseData = {
+    const responseData: ReplyData = {
       ...randomQuote,
       receiverId: interaction.user.id,
       year: new Date().getFullYear(),
+      // TODO retrieve author icon url
+
+      receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
     }
 
     const reply = await interaction.reply({
       fetchReply: true,
-      embeds: [generateResponse(responseData)],
+      embeds: [generateReply(responseData)],
     })
 
     try {
@@ -61,7 +65,7 @@ export class ReceiveHandlerService {
       )
 
       reply.edit({
-        embeds: [generateErrorResponse(responseData)],
+        embeds: [generateErrorReply(responseData)],
       })
     }
   }

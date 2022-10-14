@@ -1,18 +1,21 @@
 import { APIEmbed } from 'discord.js'
 
 const SPACE_CHARACTER = '\u200B'
-interface Data {
+export interface ReplyData {
   serverId: string
   content: string
   authorId: string
   year: number
   submitterId: string
+  submitterIconUrl?: string
+  authorIconUrl?: string
 }
 
-export function generateResponse(data: Data) {
+export function generateResponse(data: ReplyData) {
   const embed: APIEmbed = {
     author: {
       name: 'Quote Submitted',
+      icon_url: data.submitterIconUrl,
     },
 
     description: [
@@ -21,12 +24,16 @@ export function generateResponse(data: Data) {
       '',
       `_Submitted by <@${data.submitterId}>_`,
     ].join('\n'),
+
+    thumbnail: {
+      url: data.authorIconUrl,
+    },
   }
 
   return embed
 }
 
-export function generateErrorResponse(data: Data) {
+export function generateErrorResponse(data: ReplyData) {
   const embed = generateResponse(data)
 
   embed.fields = [

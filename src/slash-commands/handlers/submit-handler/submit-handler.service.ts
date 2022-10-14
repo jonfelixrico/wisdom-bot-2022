@@ -5,6 +5,7 @@ import { InteractionEventBus } from 'src/slash-commands/providers/interaction-ev
 import {
   generateErrorResponse,
   generateResponse,
+  ReplyData,
 } from './submit-presentation-utils'
 
 @Injectable()
@@ -17,17 +18,21 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
   ) {}
 
   private async handle(interaction: ChatInputCommandInteraction) {
+    const author = interaction.options.getUser('author')
     const data = {
-      authorId: interaction.options.getUser('author').id,
+      authorId: author.id,
       submitterId: interaction.user.id,
       channelId: interaction.channelId,
       serverId: interaction.guildId,
       content: interaction.options.getString('quote'),
     }
 
-    const replyData = {
+    const replyData: ReplyData = {
       ...data,
       year: new Date().getFullYear(),
+      authorIconUrl: (await author.displayAvatarURL()) || undefined,
+      submitterIconUrl:
+        (await interaction.user.displayAvatarURL()) || undefined,
     }
     const message = await interaction.reply({
       embeds: [generateResponse(replyData)],
