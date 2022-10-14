@@ -1,6 +1,6 @@
 import { APIEmbed } from 'discord.js'
 
-interface SubmitData {
+interface Data {
   serverId: string
   content: string
   authorId: string
@@ -8,7 +8,7 @@ interface SubmitData {
   submitterId: string
 }
 
-export function generateSubmitResponse(data: SubmitData) {
+export function generateResponse(data: Data) {
   const embed: APIEmbed = {
     author: {
       name: 'Quote Submitted',
@@ -18,7 +18,7 @@ export function generateSubmitResponse(data: SubmitData) {
       `**"${data.content}"**`,
       `- <@${data.authorId}>, ${data.year}`,
       '',
-      `Submitted by <@${data.submitterId}>`,
+      `_Submitted by <@${data.submitterId}>_`,
     ].join('\n'),
   }
 
