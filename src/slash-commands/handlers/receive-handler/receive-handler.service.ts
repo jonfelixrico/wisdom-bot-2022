@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
-import { generateReceiveResponse } from './receive-presentation-util'
+import {
+  generateErrorResponse,
+  generateResponse,
+} from './receive-presentation-util'
 
 @Injectable()
 export class ReceiveHandlerService {
@@ -32,15 +35,15 @@ export class ReceiveHandlerService {
       return
     }
 
+    const responseData = {
+      ...randomQuote,
+      receiverId: interaction.user.id,
+      year: new Date().getFullYear(),
+    }
+
     const reply = await interaction.reply({
       fetchReply: true,
-      embeds: [
-        generateReceiveResponse({
-          ...randomQuote,
-          receiverId: interaction.user.id,
-          year: new Date().getFullYear(),
-        }),
-      ],
+      embeds: [generateResponse(responseData)],
     })
 
     try {
@@ -57,8 +60,9 @@ export class ReceiveHandlerService {
         e,
       )
 
-      // TODO create a prettified reply
-      reply.edit('A problem occurred while receiving the quote')
+      reply.edit({
+        embeds: [generateErrorResponse(responseData)],
+      })
     }
   }
 
