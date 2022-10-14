@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ChatInputCommandInteraction, DiscordAPIError, Guild } from 'discord.js'
+import { ChatInputCommandInteraction, Guild } from 'discord.js'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
 import {
