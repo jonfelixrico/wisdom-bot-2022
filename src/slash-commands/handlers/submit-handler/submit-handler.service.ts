@@ -2,12 +2,8 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { MessageIdWhitelist } from 'src/discord/message-id-whitelist.abstract'
+import { PendingQuotePresentationService } from 'src/presentation/pending-quote-presentation/pending-quote-presentation.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
-import {
-  generateErrorResponse,
-  generateResponse,
-  ReplyData,
-} from './submit-presentation-utils'
 
 @Injectable()
 export class SubmitHandlerService implements OnApplicationBootstrap {
@@ -17,6 +13,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
     private bus: InteractionEventBus,
     private api: PendingQuoteApiService,
     private whitelist: MessageIdWhitelist,
+    private presentation: PendingQuotePresentationService,
   ) {}
 
   private async handle(interaction: ChatInputCommandInteraction) {
@@ -29,17 +26,14 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       content: interaction.options.getString('quote'),
     }
 
-    const replyData: ReplyData = {
+    const replyData = {
       ...data,
-
       // TODO find a better way to get the year
       year: new Date().getFullYear(),
-
-      authorIconUrl: await author.displayAvatarURL(),
-      submitterIconUrl: await interaction.user.displayAvatarURL(),
     }
+
     const reply = await interaction.reply({
-      embeds: [generateResponse(replyData)],
+      embeds: [await this.presentation.generateEmbed(replyData)],
       fetchReply: true,
     })
 
@@ -54,10 +48,19 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
 
       await this.whitelist.add(reply.id)
       await reply.react('👍')
+      await reply.edit({
+        embeds: [
+          await this.presentation.generatePendingEmbed({
+            ...replyData,
+            // TODO remove hardcode
+            requiredVoteCount: 3,
+          }),
+        ],
+      })
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
       await reply.edit({
-        embeds: [generateErrorResponse(replyData)],
+        embeds: [await this.presentation.generateSubmitErrorEmbed(replyData)],
       })
       return
     }
