@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ChatInputCommandInteraction, Guild } from 'discord.js'
+import { ChatInputCommandInteraction, Client, Guild } from 'discord.js'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
-import { InteractionEventBus } from 'src/slash-interactions/providers/interaction-event-bus/interaction-event-bus'
 import {
   generateErrorReply,
   generateReply,
@@ -12,7 +11,7 @@ import {
 export class ReceiveHandlerService {
   private readonly LOGGER = new Logger(ReceiveHandlerService.name)
 
-  constructor(private bus: InteractionEventBus, private api: QuoteApiService) {}
+  constructor(private api: QuoteApiService, private client: Client) {}
 
   private async getUser(guild: Guild, userId: string) {
     try {
@@ -85,7 +84,7 @@ export class ReceiveHandlerService {
   }
 
   onApplicationBootstrap() {
-    this.bus.subscribe((interaction) => {
+    this.client.on('interactionCreate', (interaction) => {
       if (!interaction.isChatInputCommand()) {
         return
       }

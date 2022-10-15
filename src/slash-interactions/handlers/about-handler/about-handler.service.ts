@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { ChatInputCommandInteraction } from 'discord.js'
-import { InteractionEventBus } from 'src/slash-interactions/providers/interaction-event-bus/interaction-event-bus'
+import { ChatInputCommandInteraction, Client } from 'discord.js'
 import { AppInfoService } from 'src/system/app-info/app-info.service'
 
 @Injectable()
 export class AboutHandlerService {
-  constructor(
-    private bus: InteractionEventBus,
-    private infoSvc: AppInfoService,
-  ) {}
+  constructor(private infoSvc: AppInfoService, private client: Client) {}
 
   private handle(interaction: ChatInputCommandInteraction) {
     interaction.reply({
@@ -18,7 +14,7 @@ export class AboutHandlerService {
   }
 
   onApplicationBootstrap() {
-    this.bus.subscribe((interaction) => {
+    this.client.on('interactionCreate', (interaction) => {
       if (
         interaction.isChatInputCommand() &&
         interaction.commandName === 'about'

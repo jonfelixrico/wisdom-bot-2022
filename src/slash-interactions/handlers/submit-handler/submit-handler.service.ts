@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
-import { ChatInputCommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, Client } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { InteractionEventBus } from 'src/slash-interactions/providers/interaction-event-bus/interaction-event-bus'
 import {
@@ -15,6 +15,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
   constructor(
     private bus: InteractionEventBus,
     private api: PendingQuoteApiService,
+    private client: Client,
   ) {}
 
   private async handle(interaction: ChatInputCommandInteraction) {
@@ -66,7 +67,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
   }
 
   onApplicationBootstrap() {
-    this.bus.subscribe((interaction) => {
+    this.client.on('interactionCreate', (interaction) => {
       if (!interaction.isChatInputCommand()) {
         return
       }
