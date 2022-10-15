@@ -1,6 +1,7 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common'
-import { Client, PartialMessageReaction } from 'discord.js'
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
+import { Client, PartialMessageReaction, User } from 'discord.js'
 import { debounceTime, groupBy, mergeMap, Observable, Subject } from 'rxjs'
+import { sprintf } from 'sprintf-js'
 
 function debounceEmitsByMessageId(
   subject: Subject<PartialMessageReaction>,
@@ -20,6 +21,8 @@ function debounceEmitsByMessageId(
  */
 @Injectable()
 export class ReactionListenersService implements OnApplicationBootstrap {
+  private readonly LOGGER = new Logger(ReactionListenersService.name)
+
   private subject: Subject<PartialMessageReaction>
   private observable: Observable<PartialMessageReaction>
 
@@ -38,15 +41,64 @@ export class ReactionListenersService implements OnApplicationBootstrap {
 
   onApplicationBootstrap() {
     const handleReactionChanges = this.handleReactionChanges.bind(this)
+    const { LOGGER, client } = this
 
-    this.client.on('messageReactionAdd', handleReactionChanges)
+    client.on(
+      'messageReactionAdd',
+      (reaction: PartialMessageReaction, user: User) => {
+        LOGGER.debug(
+          sprintf(
+            'User %s has added a reaction %s for message %s',
+            user.id,
+            reaction.emoji,
+            reaction.message.id,
+          ),
+        )
+        handleReactionChanges(reaction)
+      },
+    )
 
-    this.client.on('messageReactionRemove', handleReactionChanges)
+    client.on(
+      'messageReactionRemove',
+      (reaction: PartialMessageReaction, user: User) => {
+        LOGGER.debug(
+          sprintf(
+            'User %s has removed a reaction %s for message %s',
+            user.id,
+            reaction.emoji,
+            reaction.message.id,
+          ),
+        )
 
-    this.client.on('messageReactionRemoveAll', (message, reactions) => {
+        handleReactionChanges(reaction)
+      },
+    )
+
+    client.on('messageReactionRemoveAll', (message, reactions) => {
+      LOGGER.debug(
+        sprintf(
+          'All reactions have been removed for message %s: %s',
+          message.id,
+          reactions.map((r) => r.emoji).join(', '),
+        ),
+      )
+
       reactions.forEach(handleReactionChanges)
     })
 
-    this.client.on('messageReactionRemoveEmoji', handleReactionChanges)
+    client.on(
+      'messageReactionRemoveEmoji',
+      (reaction: PartialMessageReaction) => {
+        LOGGER.debug(
+          sprintf(
+            'The bot has removed reaction %s for message %s',
+            reaction.message.id,
+            reaction.emoji,
+          ),
+        )
+
+        handleReactionChanges(reaction)
+      },
+    )
   }
 }
