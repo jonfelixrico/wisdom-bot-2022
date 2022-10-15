@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ChatInputCommandInteraction, Guild } from 'discord.js'
+import { ChatInputCommandInteraction, Client, Guild } from 'discord.js'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
 import {
@@ -12,11 +12,15 @@ import {
 export class ReceiveHandlerService {
   private readonly LOGGER = new Logger(ReceiveHandlerService.name)
 
-  constructor(private bus: InteractionEventBus, private api: QuoteApiService) {}
+  constructor(
+    private bus: InteractionEventBus,
+    private api: QuoteApiService,
+    private client: Client,
+  ) {}
 
-  private async getUser(guild: Guild, userId: string) {
+  private async getUser(userId: string) {
     try {
-      return await guild.members.fetch(userId)
+      return await this.client.users.fetch(userId)
     } catch (e) {
       this.LOGGER.warn(
         `Error encountered while trying to fetch user data for ${userId}`,
@@ -48,7 +52,7 @@ export class ReceiveHandlerService {
       return
     }
 
-    const author = await this.getUser(interaction.guild, randomQuote.authorId)
+    const author = await this.getUser(randomQuote.authorId)
     const responseData: ReplyData = {
       ...randomQuote,
       receiverId: interaction.user.id,
@@ -56,7 +60,7 @@ export class ReceiveHandlerService {
       // TODO retrieve author icon url
 
       receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
-      quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
+      quoteAuthorIconUrl: (await author?.displayAvatarURL()) || undefined,
     }
 
     const reply = await interaction.reply({
