@@ -7,13 +7,12 @@ import { MessageIdWhitelist } from '../message-id-whitelist.abstract'
 function debounceEmitsByMessageId(
   subject: Subject<PartialMessageReaction>,
 ): Observable<PartialMessageReaction> {
-  subject.pipe(
+  return subject.pipe(
     groupBy((reaction) => reaction.message.id),
     mergeMap((grouped) => {
       return grouped.pipe(debounceTime(2000))
     }),
   )
-  return null
 }
 
 /**
