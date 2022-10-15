@@ -2,6 +2,7 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { Client, PartialMessageReaction, User } from 'discord.js'
 import { debounceTime, groupBy, mergeMap, Observable, Subject } from 'rxjs'
 import { sprintf } from 'sprintf-js'
+import { MessageIdWhitelist } from '../message-id-whitelist.abstract'
 
 function debounceEmitsByMessageId(
   subject: Subject<PartialMessageReaction>,
@@ -26,7 +27,7 @@ export class ReactionListenersService implements OnApplicationBootstrap {
   private subject: Subject<PartialMessageReaction>
   private observable: Observable<PartialMessageReaction>
 
-  constructor(private client: Client) {
+  constructor(private client: Client, private whitelist: MessageIdWhitelist) {
     this.subject = new Subject()
 
     this.observable = debounceEmitsByMessageId(this.subject)
@@ -51,11 +52,15 @@ export class ReactionListenersService implements OnApplicationBootstrap {
 
   onApplicationBootstrap() {
     const handleReactionChanges = this.handleReactionChanges.bind(this)
-    const { LOGGER, client } = this
+    const { LOGGER, client, whitelist } = this
 
     client.on(
       'messageReactionAdd',
       (reaction: PartialMessageReaction, user: User) => {
+        if (!whitelist.contains(reaction.message.id)) {
+          return
+        }
+
         LOGGER.debug(
           sprintf(
             'User %s has added a reaction %s for message %s',
@@ -71,6 +76,10 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     client.on(
       'messageReactionRemove',
       (reaction: PartialMessageReaction, user: User) => {
+        if (!whitelist.contains(reaction.message.id)) {
+          return
+        }
+
         LOGGER.debug(
           sprintf(
             'User %s has removed a reaction %s for message %s',
@@ -85,6 +94,10 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     )
 
     client.on('messageReactionRemoveAll', (message, reactions) => {
+      if (!whitelist.contains(message.id)) {
+        return
+      }
+
       LOGGER.debug(
         sprintf(
           'All reactions have been removed for message %s: %s',
@@ -99,6 +112,10 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     client.on(
       'messageReactionRemoveEmoji',
       (reaction: PartialMessageReaction) => {
+        if (!whitelist.contains(reaction.message.id)) {
+          return
+        }
+
         LOGGER.debug(
           sprintf(
             'The bot has removed reaction %s for message %s',
