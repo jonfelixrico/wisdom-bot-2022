@@ -45,7 +45,7 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
         e,
       )
       await interaction.editReply(
-        'Something went wrong while saving your upote...',
+        'Something went wrong while saving your upvote...',
       )
     }
   }
