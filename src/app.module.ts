@@ -4,6 +4,7 @@ import { DiscordModule } from './discord/discord.module'
 import { ConfigModule } from '@nestjs/config'
 import { SystemModule } from './system/system.module'
 import { ApiModule } from './api/api.module'
+import { EventListenersModule } from './event-listeners/event-listeners.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ApiModule } from './api/api.module'
     DiscordModule,
     SystemModule,
     ApiModule,
+    EventListenersModule,
   ],
   controllers: [],
   providers: [],
