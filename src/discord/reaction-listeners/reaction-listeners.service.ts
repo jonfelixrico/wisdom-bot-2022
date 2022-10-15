@@ -70,7 +70,11 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     client.on(
       'messageReactionAdd',
       (reaction: PartialMessageReaction, user: User) => {
-        if (!whitelist.contains(reaction.message.id)) {
+        if (
+          !whitelist.contains(reaction.message.id) ||
+          // We're not interested in the reactions of the bot
+          user.equals(this.client.user)
+        ) {
           return
         }
 
@@ -90,6 +94,10 @@ export class ReactionListenersService implements OnApplicationBootstrap {
       'messageReactionRemove',
       (reaction: PartialMessageReaction, user: User) => {
         if (!whitelist.contains(reaction.message.id)) {
+          /*
+           * Unlike in the add event, we're not filtering out the reaction changes caused by the bot here
+           * since we don't expect our bot to delete reactions.
+           */
           return
         }
 
