@@ -8,7 +8,7 @@ export class UserAvatarService {
 
   constructor(private client: Client) {}
 
-  async getAvatarUrl(userId: string) {
+  async getAvatarUrl(userId: string): Promise<string | undefined> {
     const { LOGGER } = this
 
     let user: User
@@ -22,7 +22,7 @@ export class UserAvatarService {
         ),
         e,
       )
-      return null
+      return undefined
     }
 
     try {
@@ -35,6 +35,8 @@ export class UserAvatarService {
         ),
         e,
       )
+
+      return undefined
     }
   }
 }
