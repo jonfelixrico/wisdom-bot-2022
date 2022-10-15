@@ -32,9 +32,9 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
 
       // TODO find a better way to get the year
       year: new Date().getFullYear(),
-      authorIconUrl: (await author.displayAvatarURL()) || undefined,
-      submitterIconUrl:
-        (await interaction.user.displayAvatarURL()) || undefined,
+
+      authorIconUrl: await author.displayAvatarURL(),
+      submitterIconUrl: await interaction.user.displayAvatarURL(),
     }
     const message = await interaction.reply({
       embeds: [generateResponse(replyData)],
