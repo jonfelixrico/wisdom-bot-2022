@@ -12,11 +12,15 @@ interface Data {
   submitterId: string
 }
 
+interface PendingData extends Data {
+  requiredVoteCount: number
+}
+
 @Injectable()
-export class QuoteSubmitPresentationService {
+export class PendingQuotePresentationService {
   constructor(private avatarSvc: UserAvatarService) {}
 
-  async generateReplyEmbed(data: Data) {
+  async generateEmbed(data: Data) {
     const embed: APIEmbed = {
       author: {
         name: 'Quote Submitted',
@@ -38,8 +42,8 @@ export class QuoteSubmitPresentationService {
     return embed
   }
 
-  async generateErrorReplyEmbed(data: Data) {
-    const embed = await this.generateReplyEmbed(data)
+  async generateSubmitErrorEmbed(data: Data) {
+    const embed = await this.generateEmbed(data)
 
     embed.fields = [
       {
@@ -48,6 +52,33 @@ export class QuoteSubmitPresentationService {
       },
     ]
     embed.author.name = '⚠️ Quote Submitted'
+
+    return embed
+  }
+
+  async generateExpiredEmbed(data: Data) {
+    const embed = await this.generateEmbed(data)
+
+    embed.fields = [
+      {
+        name: SPACE_CHARACTER,
+        value: '❌ The quote did not reach the required votes in time',
+      },
+    ]
+    embed.author.name = '❌ Quote Submitted'
+
+    return embed
+  }
+
+  async generatePendingEmbed(data: PendingData) {
+    const embed = await this.generateEmbed(data)
+
+    embed.fields = [
+      {
+        name: SPACE_CHARACTER,
+        value: `This quote needs ${data.requiredVoteCount} 👍 reactions to be approved`,
+      },
+    ]
 
     return embed
   }
