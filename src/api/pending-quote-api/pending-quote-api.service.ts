@@ -19,4 +19,13 @@ export class PendingQuoteApiService {
     const { data } = await firstValueFrom(req$)
     return data
   }
+
+  async getPendingQuoteMessageIds(serverId: string): Promise<string[]> {
+    const req$ = this.http.get<string[]>(
+      `server/${serverId}/quote/pending/discord-message`,
+    )
+
+    const { data } = await firstValueFrom(req$)
+    return data
+  }
 }
