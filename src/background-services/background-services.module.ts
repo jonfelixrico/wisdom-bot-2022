@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
-import { EventListenersModule } from 'src/event-listeners/event-listeners.module'
+import { DiscordModule } from 'src/discord/discord.module'
 import { QuoteApprovalWatcherService } from './quote-approval-watcher/quote-approval-watcher.service'
 
 @Module({
   providers: [QuoteApprovalWatcherService],
-  imports: [EventListenersModule],
+  imports: [DiscordModule],
 })
 export class BackgroundServicesModule {}
