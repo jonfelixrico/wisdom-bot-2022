@@ -1,4 +1,4 @@
-import { HttpModule } from '@nestjs/axios'
+import { HttpModule } from 'nestjs-http-promise'
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { API_BASE_URL } from 'src/env-vars.constants'
