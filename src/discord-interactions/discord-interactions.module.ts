@@ -18,4 +18,4 @@ import { ApiModule } from 'src/api/api.module'
   ],
   imports: [DiscordModule, SystemModule, ApiModule],
 })
-export class SlashCommandsModule {}
+export class DiscordInteractionsModule {}

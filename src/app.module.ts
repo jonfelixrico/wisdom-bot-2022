@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { SlashCommandsModule } from './discord-interactions/slash-commands.module'
+import { DiscordInteractionsModule } from './discord-interactions/discord-interactions.module'
 import { DiscordModule } from './discord/discord.module'
 import { ConfigModule } from '@nestjs/config'
 import { SystemModule } from './system/system.module'
@@ -11,7 +11,7 @@ import { ApiModule } from './api/api.module'
       isGlobal: true,
       envFilePath: ['.env', '.development.env'],
     }),
-    SlashCommandsModule,
+    DiscordInteractionsModule,
     DiscordModule,
     SystemModule,
     ApiModule,
