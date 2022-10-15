@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
+import { MessageIdWhitelist } from 'src/discord/message-id-whitelist.abstract'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
 import {
   generateErrorResponse,
@@ -15,6 +16,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
   constructor(
     private bus: InteractionEventBus,
     private api: PendingQuoteApiService,
+    private whitelist: MessageIdWhitelist,
   ) {}
 
   private async handle(interaction: ChatInputCommandInteraction) {
@@ -36,7 +38,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       authorIconUrl: await author.displayAvatarURL(),
       submitterIconUrl: await interaction.user.displayAvatarURL(),
     }
-    const message = await interaction.reply({
+    const reply = await interaction.reply({
       embeds: [generateResponse(replyData)],
       fetchReply: true,
     })
@@ -44,16 +46,17 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
     try {
       const { quoteId } = await this.api.submit({
         ...data,
-        messageId: message.id,
+        messageId: reply.id,
       })
       this.LOGGER.log(
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
 
-      await message.react('👍')
+      await this.whitelist.add(reply.id)
+      await reply.react('👍')
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
-      await message.edit({
+      await reply.edit({
         embeds: [generateErrorResponse(replyData)],
       })
       return
