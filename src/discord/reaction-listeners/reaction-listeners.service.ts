@@ -54,6 +54,14 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     const handleReactionChanges = this.handleReactionChanges.bind(this)
     const { LOGGER, client, whitelist } = this
 
+    /*
+     * Some notes about the technical decisions:
+     * - We're not doing the logging that we do here in `handleReactionChanges` because source-event information
+     * level is lost there.
+     * - The whitelist is for processing only the messages that matter. It might be computationally expensive if we also
+     * let message ids which are insignificant to the business logic.
+     */
+
     client.on(
       'messageReactionAdd',
       (reaction: PartialMessageReaction, user: User) => {
