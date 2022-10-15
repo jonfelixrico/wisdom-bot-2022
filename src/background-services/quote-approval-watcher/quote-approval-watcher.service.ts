@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { Client, MessageReaction } from 'discord.js'
-import LRUCache from 'lru-cache'
+import * as LRU from 'lru-cache'
 import { concatMap, from, groupBy, mergeMap } from 'rxjs'
 import { sprintf } from 'sprintf-js'
 import { GetPendingQuoteByMessageIdRes } from 'src/api/pending-quote-api/model/get-pending-quote-by-message-id.dto'
@@ -11,17 +11,18 @@ import { ReactionChangesObservable } from 'src/discord/reaction-changes-observab
 export class QuoteApprovalWatcherService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(QuoteApprovalWatcherService.name)
 
-  private cache: LRUCache<string, GetPendingQuoteByMessageIdRes>
+  private cache: LRU<string, GetPendingQuoteByMessageIdRes>
 
   constructor(
     private obs: ReactionChangesObservable,
     private api: PendingQuoteApiService,
     private client: Client,
   ) {
-    this.cache = new LRUCache({
+    this.cache = new LRU({
       noDeleteOnFetchRejection: true,
       updateAgeOnGet: true,
       updateAgeOnHas: true,
+      ttlAutopurge: true,
       ttl: 60 * 1000,
       fetchMethod: async (key) => {
         const [serverId, messageId] = key.split('/')
