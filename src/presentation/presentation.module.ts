@@ -6,5 +6,6 @@ import { PendingQuotePresentationService } from './pending-quote-presentation/pe
 @Module({
   providers: [UserAvatarService, PendingQuotePresentationService],
   imports: [DiscordModule],
+  exports: [PendingQuotePresentationService],
 })
 export class PresentationModule {}
