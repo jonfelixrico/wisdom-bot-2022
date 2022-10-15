@@ -1,6 +1,5 @@
-import { HttpService } from '@nestjs/axios'
+import { HttpService } from 'nestjs-http-promise'
 import { Injectable } from '@nestjs/common'
-import { firstValueFrom } from 'rxjs'
 import {
   SubmitQuoteInput,
   SubmitQuoteOutput,
@@ -11,12 +10,11 @@ export class PendingQuoteApiService {
   constructor(private http: HttpService) {}
 
   async submit({ serverId, ...others }: SubmitQuoteInput) {
-    const req$ = this.http.post<SubmitQuoteOutput>(
+    const { data } = await this.http.post<SubmitQuoteOutput>(
       `server/${serverId}/quote/pending`,
       others,
     )
 
-    const { data } = await firstValueFrom(req$)
     return data
   }
 }
