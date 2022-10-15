@@ -11,7 +11,7 @@ interface Data {
   authorIconUrl?: string
 }
 
-export function generateResponse(data: Data) {
+export function generateEmbed(data: Data) {
   const embed: APIEmbed = {
     author: {
       name: 'Quote Submitted',
@@ -33,8 +33,8 @@ export function generateResponse(data: Data) {
   return embed
 }
 
-export function generateErrorResponse(data: Data) {
-  const embed = generateResponse(data)
+export function generateErrorEmbed(data: Data) {
+  const embed = generateEmbed(data)
 
   embed.fields = [
     {

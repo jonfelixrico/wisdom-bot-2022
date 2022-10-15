@@ -2,10 +2,7 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
-import {
-  generateErrorResponse,
-  generateResponse,
-} from './submit-presentation-utils'
+import { generateErrorEmbed, generateEmbed } from './submit-presentation-utils'
 
 @Injectable()
 export class SubmitHandlerService implements OnApplicationBootstrap {
@@ -33,7 +30,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       submitterIconUrl: await interaction.user.displayAvatarURL(),
     }
     const message = await interaction.reply({
-      embeds: [generateResponse(replyData)],
+      embeds: [generateEmbed(replyData)],
       fetchReply: true,
     })
 
@@ -48,7 +45,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
       await message.edit({
-        embeds: [generateErrorResponse(replyData)],
+        embeds: [generateErrorEmbed(replyData)],
       })
       return
     }
