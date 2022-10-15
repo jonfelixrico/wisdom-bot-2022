@@ -29,6 +29,8 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
 
     const replyData: ReplyData = {
       ...data,
+
+      // TODO find a better way to get the year
       year: new Date().getFullYear(),
       authorIconUrl: (await author.displayAvatarURL()) || undefined,
       submitterIconUrl:
