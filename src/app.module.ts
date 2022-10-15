@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config'
 import { SystemModule } from './system/system.module'
 import { ApiModule } from './api/api.module'
 import { EventListenersModule } from './event-listeners/event-listeners.module'
+import { BackgroundServicesModule } from './background-services/background-services.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { EventListenersModule } from './event-listeners/event-listeners.module'
     SystemModule,
     ApiModule,
     EventListenersModule,
+    BackgroundServicesModule,
   ],
   controllers: [],
   providers: [],
