@@ -5,7 +5,6 @@ import { InteractionEventBus } from 'src/slash-commands/providers/interaction-ev
 import {
   generateErrorResponse,
   generateResponse,
-  ReplyData,
 } from './submit-presentation-utils'
 
 @Injectable()
@@ -27,7 +26,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       content: interaction.options.getString('quote'),
     }
 
-    const replyData: ReplyData = {
+    const replyData = {
       ...data,
       year: new Date().getFullYear(),
       authorIconUrl: await author.displayAvatarURL(),

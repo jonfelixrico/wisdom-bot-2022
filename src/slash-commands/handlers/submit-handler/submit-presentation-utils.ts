@@ -1,7 +1,7 @@
 import { APIEmbed } from 'discord.js'
 
 const SPACE_CHARACTER = '\u200B'
-export interface ReplyData {
+interface Data {
   serverId: string
   content: string
   authorId: string
@@ -11,7 +11,7 @@ export interface ReplyData {
   authorIconUrl?: string
 }
 
-export function generateResponse(data: ReplyData) {
+export function generateResponse(data: Data) {
   const embed: APIEmbed = {
     author: {
       name: 'Quote Submitted',
@@ -33,7 +33,7 @@ export function generateResponse(data: ReplyData) {
   return embed
 }
 
-export function generateErrorResponse(data: ReplyData) {
+export function generateErrorResponse(data: Data) {
   const embed = generateResponse(data)
 
   embed.fields = [
