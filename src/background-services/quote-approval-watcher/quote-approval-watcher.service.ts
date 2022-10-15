@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
-import { PartialMessageReaction } from 'discord.js'
+import { MessageReaction } from 'discord.js'
 import { ReactionChangesObservable } from 'src/discord/reaction-changes-observable'
 
 @Injectable()
@@ -8,7 +8,7 @@ export class QuoteApprovalWatcherService implements OnApplicationBootstrap {
 
   constructor(private obs: ReactionChangesObservable) {}
 
-  private handler(emit: PartialMessageReaction) {
+  private handler(emit: MessageReaction) {
     // TODO implement this
   }
 
