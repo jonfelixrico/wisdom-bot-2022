@@ -28,7 +28,7 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     this.observable = debounceEmitsByMessageId(this.subject)
   }
 
-  get reactionUpdates$() {
+  get reactionChanges$() {
     return this.observable
   }
 
