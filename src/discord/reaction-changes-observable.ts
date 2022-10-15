@@ -1,4 +1,4 @@
-import { PartialMessageReaction } from 'discord.js'
+import { MessageReaction } from 'discord.js'
 import { Observable } from 'rxjs'
 
-export class ReactionChangesObservable extends Observable<PartialMessageReaction> {}
+export class ReactionChangesObservable extends Observable<MessageReaction> {}

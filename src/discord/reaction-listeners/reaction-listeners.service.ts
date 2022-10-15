@@ -1,12 +1,12 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
-import { Client, PartialMessageReaction, User } from 'discord.js'
+import { Client, MessageReaction, PartialMessageReaction } from 'discord.js'
 import { debounceTime, groupBy, mergeMap, Observable, Subject } from 'rxjs'
 import { sprintf } from 'sprintf-js'
 import { MessageIdWhitelist } from '../message-id-whitelist.abstract'
 
 function debounceEmitsByMessageId(
-  subject: Subject<PartialMessageReaction>,
-): Observable<PartialMessageReaction> {
+  subject: Subject<MessageReaction>,
+): Observable<MessageReaction> {
   return subject.pipe(
     groupBy((reaction) => reaction.message.id),
     mergeMap((grouped) => {
@@ -23,8 +23,8 @@ function debounceEmitsByMessageId(
 export class ReactionListenersService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(ReactionListenersService.name)
 
-  private subject: Subject<PartialMessageReaction>
-  private observable: Observable<PartialMessageReaction>
+  private subject: Subject<MessageReaction>
+  private observable: Observable<MessageReaction>
 
   constructor(private client: Client, private whitelist: MessageIdWhitelist) {
     this.subject = new Subject()
@@ -50,8 +50,23 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     return this.observable
   }
 
-  private handleReactionChanges(reaction: PartialMessageReaction) {
+  private handleReactionChanges(reaction: MessageReaction) {
     this.subject.next(reaction)
+  }
+
+  async hydratePartialReactionIfNecessary(
+    reaction: PartialMessageReaction | MessageReaction,
+  ) {
+    if (reaction.partial) {
+      try {
+        await reaction.fetch()
+      } catch (e) {
+        this.LOGGER.error(
+          'Error encountered while fetching partial reaction: ',
+          e,
+        )
+      }
+    }
   }
 
   onApplicationBootstrap() {
@@ -66,55 +81,52 @@ export class ReactionListenersService implements OnApplicationBootstrap {
      * let message ids which are insignificant to the business logic.
      */
 
-    client.on(
-      'messageReactionAdd',
-      (reaction: PartialMessageReaction, user: User) => {
-        if (
-          !whitelist.contains(reaction.message.id) ||
-          // We're not interested in the reactions of the bot
-          user.equals(this.client.user)
-        ) {
-          return
-        }
+    client.on('messageReactionAdd', async (reaction, user) => {
+      if (
+        !(await whitelist.contains(reaction.message.id)) ||
+        // We're not interested in the reactions of the bot
+        user.equals(this.client.user)
+      ) {
+        return
+      }
 
-        LOGGER.debug(
-          sprintf(
-            'User %s has added a reaction %s for message %s',
-            user.id,
-            reaction.emoji,
-            reaction.message.id,
-          ),
-        )
-        handleReactionChanges(reaction)
-      },
-    )
+      LOGGER.debug(
+        sprintf(
+          'User %s has added a reaction %s for message %s',
+          user.id,
+          reaction.emoji,
+          reaction.message.id,
+        ),
+      )
 
-    client.on(
-      'messageReactionRemove',
-      (reaction: PartialMessageReaction, user: User) => {
-        if (!whitelist.contains(reaction.message.id)) {
-          /*
-           * Unlike in the add event, we're not filtering out the reaction changes caused by the bot here
-           * since we don't expect our bot to delete reactions.
-           */
-          return
-        }
+      await this.hydratePartialReactionIfNecessary(reaction)
+      handleReactionChanges(reaction)
+    })
 
-        LOGGER.debug(
-          sprintf(
-            'User %s has removed a reaction %s for message %s',
-            user.id,
-            reaction.emoji,
-            reaction.message.id,
-          ),
-        )
+    client.on('messageReactionRemove', async (reaction, user) => {
+      if (!(await whitelist.contains(reaction.message.id))) {
+        /*
+         * Unlike in the add event, we're not filtering out the reaction changes caused by the bot here
+         * since we don't expect our bot to delete reactions.
+         */
+        return
+      }
 
-        handleReactionChanges(reaction)
-      },
-    )
+      LOGGER.debug(
+        sprintf(
+          'User %s has removed a reaction %s for message %s',
+          user.id,
+          reaction.emoji,
+          reaction.message.id,
+        ),
+      )
 
-    client.on('messageReactionRemoveAll', (message, reactions) => {
-      if (!whitelist.contains(message.id)) {
+      await this.hydratePartialReactionIfNecessary(reaction)
+      handleReactionChanges(reaction)
+    })
+
+    client.on('messageReactionRemoveAll', async (message, reactions) => {
+      if (!(await whitelist.contains(message.id))) {
         return
       }
 
@@ -126,27 +138,32 @@ export class ReactionListenersService implements OnApplicationBootstrap {
         ),
       )
 
-      reactions.forEach(handleReactionChanges)
+      for (const reaction of reactions.values()) {
+        await this.hydratePartialReactionIfNecessary(reaction)
+        handleReactionChanges(reaction)
+      }
     })
 
-    client.on(
-      'messageReactionRemoveEmoji',
-      (reaction: PartialMessageReaction) => {
-        if (!whitelist.contains(reaction.message.id)) {
-          return
-        }
+    client.on('messageReactionRemoveEmoji', async (reaction) => {
+      if (reaction.partial) {
+        await reaction.fetch()
+      }
 
-        LOGGER.debug(
-          sprintf(
-            'The bot has removed reaction %s for message %s',
-            reaction.message.id,
-            reaction.emoji,
-          ),
-        )
+      if (!(await whitelist.contains(reaction.message.id))) {
+        return
+      }
 
-        handleReactionChanges(reaction)
-      },
-    )
+      LOGGER.debug(
+        sprintf(
+          'The bot has removed reaction %s for message %s',
+          reaction.message.id,
+          reaction.emoji,
+        ),
+      )
+
+      await this.hydratePartialReactionIfNecessary(reaction)
+      handleReactionChanges(reaction)
+    })
 
     LOGGER.log('Started watching for reaction-related events')
   }
