@@ -20,7 +20,7 @@ export class PendingQuoteApiService {
 
   async addVote(data: { serverId: string; quoteId: string; userId: string }) {
     await this.http.post(
-      `server/${data.serverId}/quote/pending/${data.quoteId}`,
+      `server/${data.serverId}/quote/pending/${data.quoteId}/vote`,
       {
         userId: data.userId,
       },
