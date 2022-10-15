@@ -8,7 +8,7 @@ function debounceEmitsByMessageId(
   subject: Subject<MessageReaction>,
 ): Observable<MessageReaction> {
   return subject.pipe(
-    groupBy((reaction) => reaction.message.id),
+    groupBy((reaction) => `${reaction.message.id}/${reaction.emoji}`),
     mergeMap((grouped) => {
       return grouped.pipe(debounceTime(2000))
     }),
