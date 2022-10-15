@@ -7,6 +7,7 @@ import { INTERACTION_EVENT_BUS_PROVIDER } from './providers/interaction-event-bu
 import { AboutHandlerService } from './handlers/about-handler/about-handler.service'
 import { SystemModule } from 'src/system/system.module'
 import { ApiModule } from 'src/api/api.module'
+import { PresentationModule } from 'src/presentation/presentation.module'
 
 @Module({
   providers: [
@@ -16,6 +17,6 @@ import { ApiModule } from 'src/api/api.module'
     INTERACTION_EVENT_BUS_PROVIDER,
     AboutHandlerService,
   ],
-  imports: [DiscordModule, SystemModule, ApiModule],
+  imports: [DiscordModule, SystemModule, ApiModule, PresentationModule],
 })
 export class SlashCommandsModule {}
