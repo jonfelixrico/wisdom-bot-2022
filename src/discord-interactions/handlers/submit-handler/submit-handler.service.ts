@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
-import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
+import { InteractionEventBus } from 'src/discord-interactions/providers/interaction-event-bus/interaction-event-bus'
 import {
   generateErrorEmbed,
   generateEmbed,

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ChatInputCommandInteraction } from 'discord.js'
-import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
+import { InteractionEventBus } from 'src/discord-interactions/providers/interaction-event-bus/interaction-event-bus'
 import { AppInfoService } from 'src/system/app-info/app-info.service'
 
 @Injectable()
