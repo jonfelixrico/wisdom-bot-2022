@@ -17,4 +17,22 @@ export class PendingQuoteApiService {
 
     return data
   }
+
+  async addVote(data: { serverId: string; quoteId: string; userId: string }) {
+    await this.http.post(
+      `server/${data.serverId}/quote/pending/${data.quoteId}/vote`,
+      {
+        userId: data.userId,
+      },
+    )
+  }
+
+  async finalizeStatus(data: { serverId: string; quoteId: string }) {
+    await this.http.post(
+      `server/${data.serverId}/quote/pending/${data.quoteId}/status`,
+      {
+        status: 'APPROVED',
+      },
+    )
+  }
 }

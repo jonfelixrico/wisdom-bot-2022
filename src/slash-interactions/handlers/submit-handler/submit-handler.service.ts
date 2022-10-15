@@ -1,21 +1,17 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
-import { ChatInputCommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, Client } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
-import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
 import {
-  generateErrorResponse,
-  generateResponse,
-  ReplyData,
+  generateErrorEmbed,
+  generateEmbed,
+  generatePendingMessage,
 } from './submit-presentation-utils'
 
 @Injectable()
 export class SubmitHandlerService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(SubmitHandlerService.name)
 
-  constructor(
-    private bus: InteractionEventBus,
-    private api: PendingQuoteApiService,
-  ) {}
+  constructor(private api: PendingQuoteApiService, private client: Client) {}
 
   private async handle(interaction: ChatInputCommandInteraction) {
     const author = interaction.options.getUser('author')
@@ -27,37 +23,46 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       content: interaction.options.getString('quote'),
     }
 
-    const replyData: ReplyData = {
+    const replyData = {
       ...data,
       year: new Date().getFullYear(),
-      authorIconUrl: (await author.displayAvatarURL()) || undefined,
-      submitterIconUrl:
-        (await interaction.user.displayAvatarURL()) || undefined,
+      authorIconUrl: await author.displayAvatarURL(),
+      submitterIconUrl: await interaction.user.displayAvatarURL(),
     }
-    const message = await interaction.reply({
-      embeds: [generateResponse(replyData)],
+    const reply = await interaction.reply({
+      embeds: [generateEmbed(replyData)],
       fetchReply: true,
     })
 
     try {
+      // TODO adjust endpoint to return full details
       const { quoteId } = await this.api.submit({
         ...data,
-        messageId: message.id,
+        messageId: reply.id,
       })
       this.LOGGER.log(
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
+
+      await reply.edit(
+        generatePendingMessage({
+          ...replyData,
+          id: quoteId,
+          // TODO make dynamic instead of hardcoded
+          requiredVoteCount: 3,
+        }),
+      )
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
-      await message.edit({
-        embeds: [generateErrorResponse(replyData)],
+      await reply.edit({
+        embeds: [generateErrorEmbed(replyData)],
       })
       return
     }
   }
 
   onApplicationBootstrap() {
-    this.bus.subscribe((interaction) => {
+    this.client.on('interactionCreate', (interaction) => {
       if (!interaction.isChatInputCommand()) {
         return
       }
