@@ -34,8 +34,24 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
 
       // TODO emit event to update the quote
 
-      await interaction.editReply('Your upvote has been recorded ✔️')
+      await interaction.editReply('Your upvote has been recorded ✅')
     } catch (e) {
+      if (e.response?.status === 403) {
+        LOGGER.debug(
+          sprintf(
+            'Vote blocked -- user %s has already voted for quote %s',
+            interaction.user.id,
+            quoteId,
+          ),
+          e,
+        )
+
+        await interaction.editReply(
+          'You have already upvoted this quote before!',
+        )
+        return
+      }
+
       LOGGER.error(
         sprintf(
           'An error was encountered while processing the upvote of user %s for quote %s',
