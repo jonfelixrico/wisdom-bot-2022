@@ -24,7 +24,7 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     this.observable = debounceEmitsByMessageId(this.subject)
   }
 
-  get reactionDeltas$() {
+  get reactionUpdates$() {
     return this.observable
   }
 
