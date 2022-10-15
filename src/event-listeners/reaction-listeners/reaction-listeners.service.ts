@@ -28,7 +28,17 @@ export class ReactionListenersService implements OnApplicationBootstrap {
 
   constructor(private client: Client) {
     this.subject = new Subject()
+
     this.observable = debounceEmitsByMessageId(this.subject)
+    this.observable.subscribe((reaction) => {
+      this.LOGGER.debug(
+        sprintf(
+          'Re-emitted changes for reaction %s in message %s',
+          reaction.emoji,
+          reaction.message.id,
+        ),
+      )
+    })
   }
 
   get reactionChanges$() {
@@ -100,5 +110,7 @@ export class ReactionListenersService implements OnApplicationBootstrap {
         handleReactionChanges(reaction)
       },
     )
+
+    LOGGER.log('Started watching for reaction-related events')
   }
 }
