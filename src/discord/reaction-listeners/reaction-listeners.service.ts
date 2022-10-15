@@ -31,7 +31,12 @@ export class ReactionListenersService implements OnApplicationBootstrap {
     this.subject = new Subject()
 
     this.observable = debounceEmitsByMessageId(this.subject)
+
     this.observable.subscribe((reaction) => {
+      /*
+       * We're interested in what the observable actually emits because what gets emitted is less than
+       * what came in.
+       */
       this.LOGGER.debug(
         sprintf(
           'Re-emitted changes for reaction %s in message %s',
