@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { Client } from 'discord.js'
 import { DISCORD_CLIENT_PROVIDER } from './discord-client.provider'
 import { ReactionChangesObservable } from './reaction-changes-observable'
 import { ReactionListenersService } from './reaction-listeners/reaction-listeners.service'
@@ -15,6 +14,6 @@ import { ReactionListenersService } from './reaction-listeners/reaction-listener
       useFactory: (svc: ReactionListenersService) => svc.reactionChanges$,
     },
   ],
-  exports: [Client],
+  exports: [DISCORD_CLIENT_PROVIDER, ReactionChangesObservable],
 })
 export class DiscordModule {}
