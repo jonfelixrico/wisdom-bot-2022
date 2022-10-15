@@ -1,4 +1,11 @@
-import { APIEmbed } from 'discord.js'
+import {
+  APIActionRowComponent,
+  APIButtonComponentWithCustomId,
+  APIEmbed,
+  ButtonStyle,
+  ComponentType,
+  MessageEditOptions,
+} from 'discord.js'
 
 const SPACE_CHARACTER = '\u200B'
 interface Data {
@@ -49,9 +56,26 @@ export function generateErrorEmbed(data: Data) {
 
 interface PendingData extends Data {
   requiredVoteCount: number
+  id: string
 }
 
-export function generatePendingEmbed(data: PendingData) {
+function createUpvoteButton(
+  quoteId: string,
+): APIActionRowComponent<APIButtonComponentWithCustomId> {
+  return {
+    components: [
+      {
+        style: ButtonStyle.Success,
+        custom_id: `vote/${quoteId}`,
+        type: ComponentType.Button,
+        label: '👍 Upvote',
+      },
+    ],
+    type: ComponentType.ActionRow,
+  }
+}
+
+export function generatePendingMessage(data: PendingData): MessageEditOptions {
   const embed = generateEmbed(data)
 
   embed.fields = [
@@ -61,5 +85,8 @@ export function generatePendingEmbed(data: PendingData) {
     },
   ]
 
-  return embed
+  return {
+    embeds: [embed],
+    components: [createUpvoteButton(data.id)],
+  }
 }

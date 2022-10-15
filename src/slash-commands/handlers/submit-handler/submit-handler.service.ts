@@ -5,7 +5,7 @@ import { InteractionEventBus } from 'src/slash-commands/providers/interaction-ev
 import {
   generateErrorEmbed,
   generateEmbed,
-  generatePendingEmbed,
+  generatePendingMessage,
 } from './submit-presentation-utils'
 
 @Injectable()
@@ -48,16 +48,14 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
 
-      reply.edit({
-        embeds: [
-          generatePendingEmbed({
-            ...replyData,
-
-            // TODO make this dynamic
-            requiredVoteCount: 3,
-          }),
-        ],
-      })
+      await reply.edit(
+        generatePendingMessage({
+          ...replyData,
+          id: quoteId,
+          // TODO make dynamic instead of hardcoded
+          requiredVoteCount: 3,
+        }),
+      )
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
       await reply.edit({
