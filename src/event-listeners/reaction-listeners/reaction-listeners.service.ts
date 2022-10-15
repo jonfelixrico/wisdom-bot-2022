@@ -8,7 +8,7 @@ function debounceEmitsByMessageId(
   subject.pipe(
     groupBy((reaction) => reaction.message.id),
     mergeMap((grouped) => {
-      return grouped.pipe(debounceTime(2))
+      return grouped.pipe(debounceTime(2000))
     }),
   )
   return null
