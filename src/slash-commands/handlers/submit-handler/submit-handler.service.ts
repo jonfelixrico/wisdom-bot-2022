@@ -2,7 +2,11 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { InteractionEventBus } from 'src/slash-commands/providers/interaction-event-bus/interaction-event-bus'
-import { generateErrorEmbed, generateEmbed } from './submit-presentation-utils'
+import {
+  generateErrorEmbed,
+  generateEmbed,
+  generatePendingEmbed,
+} from './submit-presentation-utils'
 
 @Injectable()
 export class SubmitHandlerService implements OnApplicationBootstrap {
@@ -35,6 +39,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
     })
 
     try {
+      // TODO adjust endpoint to return full details
       const { quoteId } = await this.api.submit({
         ...data,
         messageId: message.id,
@@ -42,6 +47,17 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       this.LOGGER.log(
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
+
+      message.edit({
+        embeds: [
+          generatePendingEmbed({
+            ...replyData,
+
+            // TODO make this dynamic
+            requiredVoteCount: 3,
+          }),
+        ],
+      })
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
       await message.edit({

@@ -46,3 +46,20 @@ export function generateErrorEmbed(data: Data) {
 
   return embed
 }
+
+interface PendingData extends Data {
+  requiredVoteCount: number
+}
+
+export function generatePendingEmbed(data: PendingData) {
+  const embed = generateEmbed(data)
+
+  embed.fields = [
+    {
+      name: SPACE_CHARACTER,
+      value: `This quote needs **${data.requiredVoteCount}** upvotes to be approved`,
+    },
+  ]
+
+  return embed
+}
