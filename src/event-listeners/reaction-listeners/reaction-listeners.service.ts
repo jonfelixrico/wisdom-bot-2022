@@ -14,6 +14,10 @@ function debounceEmitsByMessageId(
   return null
 }
 
+/**
+ * The only concern of this service is to listen for reaction-related events and to just
+ * re-emit them.
+ */
 @Injectable()
 export class ReactionListenersService implements OnApplicationBootstrap {
   private subject: Subject<PartialMessageReaction>
