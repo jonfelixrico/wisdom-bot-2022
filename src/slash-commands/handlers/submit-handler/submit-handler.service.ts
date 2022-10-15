@@ -33,7 +33,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       authorIconUrl: await author.displayAvatarURL(),
       submitterIconUrl: await interaction.user.displayAvatarURL(),
     }
-    const message = await interaction.reply({
+    const reply = await interaction.reply({
       embeds: [generateEmbed(replyData)],
       fetchReply: true,
     })
@@ -42,13 +42,13 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       // TODO adjust endpoint to return full details
       const { quoteId } = await this.api.submit({
         ...data,
-        messageId: message.id,
+        messageId: reply.id,
       })
       this.LOGGER.log(
         `Created quote ${quoteId} from interaction ${interaction.id}`,
       )
 
-      message.edit({
+      reply.edit({
         embeds: [
           generatePendingEmbed({
             ...replyData,
@@ -60,7 +60,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       })
     } catch (e) {
       this.LOGGER.error('Error encountered while submitting: ', e)
-      await message.edit({
+      await reply.edit({
         embeds: [generateErrorEmbed(replyData)],
       })
       return
