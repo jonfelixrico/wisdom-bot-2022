@@ -82,4 +82,18 @@ export class PendingQuotePresentationService {
 
     return embed
   }
+
+  async generateAcceptedEmbed(data: Data) {
+    const embed = await this.generateEmbed(data)
+
+    embed.fields = [
+      {
+        name: SPACE_CHARACTER,
+        value: '✔️ This quote has been accepted',
+      },
+    ]
+    embed.author.name = '✔️ Quote Submitted'
+
+    return embed
+  }
 }
