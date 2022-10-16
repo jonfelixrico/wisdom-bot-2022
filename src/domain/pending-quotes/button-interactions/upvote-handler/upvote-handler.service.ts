@@ -2,6 +2,7 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ButtonInteraction, CacheType, Client } from 'discord.js'
 import { sprintf } from 'sprintf'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
+import { PendingQuoteDownstreamService } from '../../services/pending-quote-downstream/pending-quote-downstream.service'
 
 const VOTE_REGEXP = /^vote\/(.*)$/
 
@@ -9,7 +10,11 @@ const VOTE_REGEXP = /^vote\/(.*)$/
 export class UpvoteHandlerService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(UpvoteHandlerService.name)
 
-  constructor(private client: Client, private api: PendingQuoteApiService) {}
+  constructor(
+    private client: Client,
+    private api: PendingQuoteApiService,
+    private downstream: PendingQuoteDownstreamService,
+  ) {}
 
   private async handle(
     interaction: ButtonInteraction<CacheType>,
@@ -35,6 +40,7 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
       // TODO emit event to update the quote
 
       await interaction.editReply('Your upvote has been recorded ✅')
+      await this.downstream.queueForProcessing(quoteId)
     } catch (e) {
       if (e.response?.status === 403) {
         LOGGER.debug(
