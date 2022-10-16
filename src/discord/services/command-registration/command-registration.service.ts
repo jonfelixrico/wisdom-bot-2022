@@ -2,11 +2,11 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Client, REST, Routes } from 'discord.js'
 import { sprintf } from 'sprintf'
+import { CommandBuilder } from 'src/discord/discord.types'
 import {
   REGISTER_GUILDS_ONLY,
   REGISTER_GUILD_IDS,
 } from 'src/env-vars.constants'
-import { CommandBuilder } from 'src/slash-interactions/registration/registration.types'
 
 function getCommandNames(...commands: CommandBuilder[]) {
   return commands.map(({ name }) => name)
