@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { SubmitHandlerService } from './handlers/submit-handler/submit-handler.service'
 import { ReceiveHandlerService } from './handlers/receive-handler/receive-handler.service'
 import { DiscordModule } from 'src/discord/discord.module'
 import { CommandRegistrationServiceObs } from './registration/command-registration/command-registration.service'
@@ -9,7 +8,6 @@ import { ApiModule } from 'src/api/api.module'
 
 @Module({
   providers: [
-    SubmitHandlerService,
     ReceiveHandlerService,
     CommandRegistrationServiceObs,
     AboutHandlerService,
