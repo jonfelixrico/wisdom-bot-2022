@@ -57,8 +57,8 @@ export class PendingQuoteDownstreamService {
       const message = await this.msgSvc.getMessage(dto)
 
       await this.api.finalizeStatus({
-        serverId: dto.serverId,
         quoteId: id,
+        status: 'APPROVED',
       })
       LOGGER.debug(`Finalized status of quote ${id} as approved`)
 
