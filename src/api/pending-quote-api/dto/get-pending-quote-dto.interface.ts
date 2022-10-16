@@ -9,5 +9,9 @@ export class GetPendingQuoteRespDto {
   expirationDt: Date
 
   requiredVoteCount: number
-  votes: Record<string, Date>
+
+  /**
+   * Value is serialized date.
+   */
+  votes: Record<string, string>
 }
