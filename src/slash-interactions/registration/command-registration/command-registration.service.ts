@@ -21,6 +21,6 @@ export class CommandRegistrationServiceObs implements OnApplicationBootstrap {
   constructor(private svc: CommandRegistrationService) {}
 
   async onApplicationBootstrap() {
-    this.svc.register(TO_REGISTER)
+    this.svc.register(...TO_REGISTER)
   }
 }

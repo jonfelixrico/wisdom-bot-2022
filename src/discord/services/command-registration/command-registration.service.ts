@@ -89,7 +89,7 @@ export class CommandRegistrationService implements OnApplicationBootstrap {
     }
   }
 
-  async register(commands: CommandBuilder[]) {
+  async register(...commands: CommandBuilder[]) {
     if (this.registerToGuildsOnly) {
       await this.registerToGuilds(this.guildIds, commands)
       return
