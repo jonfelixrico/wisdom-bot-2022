@@ -1,23 +1,17 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ChatInputCommandInteraction, Client } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
-import { CommandRegistrationService } from 'src/discord/services/command-registration/command-registration.service'
 import {
   generateErrorEmbed,
   generateEmbed,
   generatePendingMessage,
 } from './submit-presentation-utils'
-import { SUBMIT_COMMAND } from './submit.command'
 
 @Injectable()
 export class SubmitHandlerService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(SubmitHandlerService.name)
 
-  constructor(
-    private api: PendingQuoteApiService,
-    private client: Client,
-    private regSvc: CommandRegistrationService,
-  ) {}
+  constructor(private api: PendingQuoteApiService, private client: Client) {}
 
   private async handle(interaction: ChatInputCommandInteraction) {
     const author = interaction.options.getUser('author')
@@ -81,7 +75,5 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
         this.handle(interaction)
       }
     })
-
-    await this.regSvc.register(SUBMIT_COMMAND)
   }
 }
