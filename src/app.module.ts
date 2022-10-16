@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config'
 import { SystemModule } from './system/system.module'
 import { ApiModule } from './api/api.module'
 import { PendingQuotesModule } from './domain/pending-quotes/pending-quotes.module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PendingQuotesModule } from './domain/pending-quotes/pending-quotes.modu
     SystemModule,
     ApiModule,
     PendingQuotesModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [],
