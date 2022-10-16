@@ -19,14 +19,13 @@ export class PendingQuoteApprovalService {
     LOGGER.debug(`Handling the approval of quote ${quote.id}`)
 
     try {
-      const message = await this.msgSvc.getMessage(quote)
-
       await this.api.finalizeStatus({
         quoteId: quote.id,
         status: 'APPROVED',
       })
       LOGGER.debug(`Finalized status of quote ${quote.id} as approved`)
 
+      const message = await this.msgSvc.getMessage(quote)
       await message.edit(
         await this.msgGen.generateForApproval({
           ...quote,
