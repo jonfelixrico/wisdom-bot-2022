@@ -103,8 +103,8 @@ export class PendingQuoteDownstreamService {
       // do expiration processing
       // render
     } else if (
-      // check if quote has reached enough numbers of view
-      Object.values(quoteData?.votes ?? {}).length >= 1
+      // check if quote has reached enough numbers of upvotes
+      Object.values(quoteData.votes ?? {}).length >= quoteData.requiredVoteCount
     ) {
       await this.processApproval(quoteData)
     } else {
