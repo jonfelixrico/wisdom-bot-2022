@@ -5,7 +5,6 @@ import {
   APIEmbed,
   ButtonStyle,
   ComponentType,
-  MessageEditOptions,
 } from 'discord.js'
 import { UserAvatarService } from 'src/discord/services/user-avatar/user-avatar.service'
 
@@ -51,14 +50,14 @@ export class PendingQuoteMessageGeneratorService {
     return embed
   }
 
-  async generateForSubmit(data: Data): Promise<MessageEditOptions> {
+  async generateForSubmit(data: Data) {
     const embed = await this.generateEmbed(data)
     return {
       embeds: [embed],
     }
   }
 
-  async generateForSubmitError(data: Data): Promise<MessageEditOptions> {
+  async generateForSubmitError(data: Data) {
     const embed = await this.generateEmbed(data)
 
     embed.fields = [
@@ -90,7 +89,7 @@ export class PendingQuoteMessageGeneratorService {
     }
   }
 
-  async generateForOngoing(data: PendingData): Promise<MessageEditOptions> {
+  async generateForOngoing(data: PendingData) {
     const embed = await this.generateEmbed(data)
 
     embed.fields = [
@@ -106,7 +105,7 @@ export class PendingQuoteMessageGeneratorService {
     }
   }
 
-  async generateForApprove(data: Data): Promise<MessageEditOptions> {
+  async generateForApprove(data: Data) {
     const embed = await this.generateEmbed(data)
 
     embed.fields = [
