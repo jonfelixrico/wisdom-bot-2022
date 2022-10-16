@@ -9,6 +9,7 @@ specifiers:
   '@nestjs/schedule': ^2.1.0
   '@nestjs/schematics': ^8.0.0
   '@nestjs/testing': ^8.0.0
+  '@types/cron': ^2.0.0
   '@types/express': ^4.17.13
   '@types/jest': 27.5.0
   '@types/node': ^16.0.0
@@ -53,6 +54,7 @@ devDependencies:
   '@nestjs/cli': 8.2.8
   '@nestjs/schematics': 8.0.11_typescript@4.8.4
   '@nestjs/testing': 8.4.7_c1bddf0102e0d68dc342d4afcbe21907
+  '@types/cron': 2.0.0
   '@types/express': 4.17.14
   '@types/jest': 27.5.0
   '@types/node': 16.11.64
@@ -1207,6 +1209,13 @@ packages:
     resolution: {integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==}
     dev: true
 
+  /@types/cron/2.0.0:
+    resolution: {integrity: sha512-xZM08fqvwIXgghtPVkSPKNgC+JoMQ2OHazEvyTKnNf7aWu1aB6/4lBbQFrb03Td2cUGG7ITzMv3mFYnMu6xRaQ==}
+    dependencies:
+      '@types/luxon': 3.0.1
+      '@types/node': 16.11.64
+    dev: true
+
   /@types/eslint-scope/3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
@@ -1277,6 +1286,10 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/luxon/3.0.1:
+    resolution: {integrity: sha512-/LAvk1cMOJt0ghzMFrZEvByUhsiEfeeT2IF53Le+Ki3A538yEL9pRZ7a6MuCxdrYK+YNqNIDmrKU/r2nnw04zQ==}
     dev: true
 
   /@types/mime/3.0.1:
