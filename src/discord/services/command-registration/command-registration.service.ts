@@ -66,7 +66,7 @@ export class CommandRegistrationService implements OnApplicationBootstrap {
     }
   }
 
-  async registerGlobally(commands: CommandBuilder[]) {
+  private async registerGlobally(commands: CommandBuilder[]) {
     const { LOGGER } = this
 
     try {
