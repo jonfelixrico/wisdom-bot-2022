@@ -14,4 +14,8 @@ export class GetPendingQuoteRespDto {
    * Value is serialized date.
    */
   votes: Record<string, string>
+
+  messageId: string
+  channelId: string
+  serverId: string
 }
