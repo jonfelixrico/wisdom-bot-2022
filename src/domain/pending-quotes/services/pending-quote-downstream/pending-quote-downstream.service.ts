@@ -133,7 +133,9 @@ export class PendingQuoteDownstreamService {
         groupBy((id) => id),
         mergeMap((idGroup$) => {
           return idGroup$.pipe(
+            // debounceTime + groupBy will debounce calls per quote id
             debounceTime(2500),
+            // this is to handle debounce emits sequentially
             concatMap((id) => from(this.handleWrapped(id))),
           )
         }),
