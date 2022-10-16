@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { debounceTime, groupBy, mergeMap, Subject } from 'rxjs'
+import { concatMap, debounceTime, from, groupBy, mergeMap, Subject } from 'rxjs'
 import { sprintf } from 'sprintf'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 
@@ -35,18 +35,27 @@ export class PendingQuoteDownstreamService {
     }
   }
 
+  private async handleWrapped(quoteId: string) {
+    try {
+      await this.handle(quoteId)
+    } catch (e) {
+      this.LOGGER.error(`Uncaught exception while processing ${quoteId}`, e)
+    }
+  }
+
   queueForProcessing(quoteId: string) {
     this.subject.next(quoteId)
   }
 
   private initListener() {
-    this.subject
-      .pipe(
-        groupBy((id) => id),
-        mergeMap((idGroup$) => {
-          return idGroup$.pipe(debounceTime(5000))
-        }),
-      )
-      .subscribe((quoteId) => this.handle(quoteId))
+    this.subject.pipe(
+      groupBy((id) => id),
+      mergeMap((idGroup$) => {
+        return idGroup$.pipe(
+          debounceTime(5000),
+          concatMap((id) => from(this.handleWrapped(id))),
+        )
+      }),
+    )
   }
 }
