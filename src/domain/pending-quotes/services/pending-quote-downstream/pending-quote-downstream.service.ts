@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Client } from 'discord.js'
 import { concatMap, debounceTime, from, groupBy, mergeMap, Subject } from 'rxjs'
 import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pending-quote-dto.interface'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
+import { MessageService } from 'src/discord/services/message/message.service'
 import { PendingQuoteMessageGeneratorService } from '../pending-quote-message-generator/pending-quote-message-generator.service'
 
 @Injectable()
@@ -13,19 +13,10 @@ export class PendingQuoteDownstreamService {
 
   constructor(
     private api: PendingQuoteApiService,
-    private client: Client,
     private msgGen: PendingQuoteMessageGeneratorService,
+    private msgSvc: MessageService,
   ) {
     this.initListener()
-  }
-
-  private async getMessage(channelId: string, messageId: string) {
-    const channel = await this.client.channels.fetch(channelId)
-    if (!channel.isTextBased()) {
-      return null
-    }
-
-    return await channel.messages.fetch(messageId)
   }
 
   private async reRenderOngoing(dto: GetPendingQuoteRespDto) {
@@ -35,7 +26,7 @@ export class PendingQuoteDownstreamService {
 
     LOGGER.debug(`Updating message for ongoing quote ${id}`)
     try {
-      const message = await this.getMessage(dto.channelId, dto.messageId)
+      const message = await this.msgSvc.getMessage(dto)
       if (!message) {
         return
       }
@@ -63,7 +54,7 @@ export class PendingQuoteDownstreamService {
     LOGGER.debug(`Handling the approval of quote ${id}`)
 
     try {
-      const message = await this.getMessage(dto.channelId, dto.messageId)
+      const message = await this.msgSvc.getMessage(dto)
 
       await this.api.finalizeStatus({
         serverId: dto.serverId,
