@@ -98,7 +98,7 @@ export class PendingQuoteDownstreamService {
         groupBy((id) => id),
         mergeMap((idGroup$) => {
           return idGroup$.pipe(
-            debounceTime(5000),
+            debounceTime(2500),
             concatMap((id) => from(this.handleWrapped(id))),
           )
         }),
