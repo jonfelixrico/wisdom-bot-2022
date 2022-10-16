@@ -33,6 +33,10 @@ export class PendingQuoteDownstreamService implements OnApplicationBootstrap {
     }
   }
 
+  queueForProcessing(quoteId: string) {
+    this.subject.next(quoteId)
+  }
+
   onApplicationBootstrap() {
     this.subject
       .pipe(
