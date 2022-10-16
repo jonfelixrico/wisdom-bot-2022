@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js'
-import { CommandBuilder } from 'src/discord/discord.types'
+import { CommandBuilder } from '../types'
 
 export const WISDOM_SUBCOMMANDS: CommandBuilder = new SlashCommandBuilder()
   .setName('wisdom')
