@@ -6,6 +6,7 @@ specifiers:
   '@nestjs/config': ^2.2.0
   '@nestjs/core': ^8.0.0
   '@nestjs/platform-express': ^8.0.0
+  '@nestjs/schedule': ^2.1.0
   '@nestjs/schematics': ^8.0.0
   '@nestjs/testing': ^8.0.0
   '@types/express': ^4.17.13
@@ -40,6 +41,7 @@ dependencies:
   '@nestjs/config': 2.2.0_0a8273714d64c92835a0333e0d3fa2a6
   '@nestjs/core': 8.4.7_8d4cba48a6c3a448668139fdde7a3554
   '@nestjs/platform-express': 8.4.7_fce4c3b686c1225eb94686491d30b061
+  '@nestjs/schedule': 2.1.0_ce2460e621852264742fbbcaa8a76b41
   discord.js: 14.5.0
   nestjs-http-promise: 2.0.0_9c2ac1d629770c7cc358721622914720
   reflect-metadata: 0.1.13
@@ -1007,6 +1009,20 @@ packages:
       express: 4.18.1
       multer: 1.4.4-lts.1
       tslib: 2.4.0
+    dev: false
+
+  /@nestjs/schedule/2.1.0_ce2460e621852264742fbbcaa8a76b41:
+    resolution: {integrity: sha512-4Xaw56WiW3VsxEPPnj/iDtfjcO+sUZyYAeRxD0gnF5havncxjAnv52Iw7UH3DuzzUA784xPGgGje3Fq0Gu925g==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0
+      '@nestjs/core': ^7.0.0 || ^8.0.0 || ^9.0.0
+      reflect-metadata: ^0.1.12
+    dependencies:
+      '@nestjs/common': 8.4.7_c667cf017b020ad25d054a461e0ef748
+      '@nestjs/core': 8.4.7_8d4cba48a6c3a448668139fdde7a3554
+      cron: 2.0.0
+      reflect-metadata: 0.1.13
+      uuid: 8.3.2
     dev: false
 
   /@nestjs/schematics/8.0.11_chokidar@3.5.3+typescript@4.7.4:
@@ -2165,6 +2181,12 @@ packages:
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
+
+  /cron/2.0.0:
+    resolution: {integrity: sha512-RPeRunBCFr/WEo7WLp8Jnm45F/ziGJiHVvVQEBSDTSGu6uHW49b2FOP2O14DcXlGJRLhwE7TIoDzHHK4KmlL6g==}
+    dependencies:
+      luxon: 1.28.0
+    dev: false
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -3783,6 +3805,10 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /luxon/1.28.0:
+    resolution: {integrity: sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==}
+    dev: false
 
   /macos-release/2.5.0:
     resolution: {integrity: sha512-EIgv+QZ9r+814gjJj0Bt5vSLJLzswGmSUbUpbi9AIr/fsN2IWFBl2NucV9PAiek+U1STK468tEkxmVYUtuAN3g==}
