@@ -8,6 +8,10 @@ import {
 } from 'src/env-vars.constants'
 import { CommandBuilder } from 'src/slash-interactions/registration/registration.types'
 
+function getCommandNames(...commands: CommandBuilder[]) {
+  return commands.map(({ name }) => name)
+}
+
 @Injectable()
 export class CommandRegistrationService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(CommandRegistrationService.name)
@@ -45,6 +49,11 @@ export class CommandRegistrationService implements OnApplicationBootstrap {
             body: commands,
           },
         )
+
+        LOGGER.debug(
+          sprintf('Registered the ff. commands for guild %s', guildId),
+          getCommandNames(...commands),
+        )
       } catch (e) {
         LOGGER.error(
           sprintf(
@@ -57,11 +66,8 @@ export class CommandRegistrationService implements OnApplicationBootstrap {
     }
   }
 
-  async register(commands: CommandBuilder[]) {
-    if (this.registerToGuildsOnly) {
-      await this.registerToGuilds(this.guildIds, commands)
-      return
-    }
+  async registerGlobally(commands: CommandBuilder[]) {
+    const { LOGGER } = this
 
     try {
       await this.restClient.put(
@@ -70,12 +76,26 @@ export class CommandRegistrationService implements OnApplicationBootstrap {
           body: { commands },
         },
       )
+
+      LOGGER.debug(
+        'Registered the ff. commands globally',
+        getCommandNames(...commands),
+      )
     } catch (e) {
-      this.LOGGER.error(
+      LOGGER.error(
         'Error encountered while trying to register global commands',
         e,
       )
     }
+  }
+
+  async register(commands: CommandBuilder[]) {
+    if (this.registerToGuildsOnly) {
+      await this.registerToGuilds(this.guildIds, commands)
+      return
+    }
+
+    await this.registerGlobally(commands)
   }
 
   onApplicationBootstrap() {
