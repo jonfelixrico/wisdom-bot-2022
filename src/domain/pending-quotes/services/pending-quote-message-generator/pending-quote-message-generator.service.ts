@@ -104,6 +104,7 @@ export class PendingQuoteMessageGeneratorService {
     embed.fields = [
       {
         name: SPACE_CHARACTER,
+        // TODO add text for indicating expiration
         value: `This quote needs **${Math.max(
           0,
           data.requiredVoteCount - votesAsArray.length,
