@@ -4,6 +4,7 @@ import {
   SubmitQuoteReqDto,
   SubmitQuoteRespDto,
 } from './dto/submit-quote-dto.interface'
+import { GetPendingQuoteRespDto } from './dto/get-pending-quote-dto.interface'
 
 @Injectable()
 export class PendingQuoteApiService {
@@ -34,5 +35,18 @@ export class PendingQuoteApiService {
         status: 'APPROVED',
       },
     )
+  }
+
+  async get(reqParams: { quoteId: string }): Promise<GetPendingQuoteRespDto> {
+    try {
+      const { data } = await this.http.get(`quote/pending/${reqParams.quoteId}`)
+      return data
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return null
+      }
+
+      throw e
+    }
   }
 }
