@@ -82,7 +82,7 @@ export class PendingQuoteDownstreamService {
         reply: {
           messageReference: message,
         },
-        content: 'A quote has been approved 🎊🎉',
+        content: 'This quote has been approved 🎊🎉',
       })
     } catch (e) {
       LOGGER.error(
