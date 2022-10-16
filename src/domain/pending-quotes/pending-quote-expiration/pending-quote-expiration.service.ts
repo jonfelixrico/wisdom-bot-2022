@@ -1,17 +1,19 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pending-quote-dto.interface'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { MessageService } from 'src/discord/services/message/message.service'
 import { PendingQuoteMessageGeneratorService } from '../services/pending-quote-message-generator/pending-quote-message-generator.service'
-
+import { Cron } from '@nestjs/schedule'
+import { Client } from 'discord.js'
 @Injectable()
-export class PendingQuoteExpirationService {
+export class PendingQuoteExpirationService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(PendingQuoteExpirationService.name)
 
   constructor(
     private api: PendingQuoteApiService,
     private msgSvc: MessageService,
     private msgGen: PendingQuoteMessageGeneratorService,
+    private client: Client,
   ) {}
 
   async processExpiration(quote: GetPendingQuoteRespDto) {
@@ -46,5 +48,38 @@ export class PendingQuoteExpirationService {
         e,
       )
     }
+  }
+
+  private async doExpiredQuoteSweep(serverId: string) {
+    const { LOGGER } = this
+    const expiredQuotes = await this.api.getExpiredQuotes({ serverId })
+    if (!expiredQuotes?.length) {
+      LOGGER.debug(`No expiring quotes found for ${serverId}`)
+      return
+    }
+
+    for (const quote of expiredQuotes) {
+      await this.processExpiration(quote)
+    }
+  }
+
+  @Cron('0/15 * * * *')
+  private async runExpiredQuoteRoutine() {
+    const { LOGGER } = this
+
+    LOGGER.verbose('Running routine for sweeping for expired quotes')
+    const guildIds = Array.from(this.client.guilds.cache.keys())
+    for (const guildId of guildIds) {
+      try {
+        await this.doExpiredQuoteSweep(guildId)
+      } catch (e) {
+        LOGGER.error(`Expired quote sweep failed for server ${guildId}`, e)
+      }
+    }
+    LOGGER.verbose('Finished the sweep routine')
+  }
+
+  onApplicationBootstrap() {
+    this.runExpiredQuoteRoutine()
   }
 }
