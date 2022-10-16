@@ -4,6 +4,7 @@ import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pendin
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { MessageService } from 'src/discord/services/message/message.service'
 import { PendingQuoteApprovalService } from '../../pending-quote-approval/pending-quote-approval.service'
+import { PendingQuoteExpirationService } from '../../pending-quote-expiration/pending-quote-expiration.service'
 import { PendingQuoteMessageGeneratorService } from '../pending-quote-message-generator/pending-quote-message-generator.service'
 
 @Injectable()
@@ -17,6 +18,7 @@ export class PendingQuoteDownstreamService {
     private msgGen: PendingQuoteMessageGeneratorService,
     private msgSvc: MessageService,
     private approveSvc: PendingQuoteApprovalService,
+    private expireSvc: PendingQuoteExpirationService,
   ) {
     this.initListener()
   }
@@ -57,9 +59,7 @@ export class PendingQuoteDownstreamService {
     }
 
     if (new Date() > new Date(quoteData.expirationDt)) {
-      // TODO implement expiration
-      // do expiration processing
-      // render
+      await this.expireSvc.processExpiration(quoteData)
     } else if (
       // check if quote has reached enough numbers of upvotes
       Object.values(quoteData.votes ?? {}).length >= quoteData.requiredVoteCount
