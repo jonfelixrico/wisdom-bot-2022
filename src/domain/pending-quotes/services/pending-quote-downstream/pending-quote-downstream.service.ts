@@ -50,14 +50,16 @@ export class PendingQuoteDownstreamService {
   }
 
   private initListener() {
-    this.subject.pipe(
-      groupBy((id) => id),
-      mergeMap((idGroup$) => {
-        return idGroup$.pipe(
-          debounceTime(5000),
-          concatMap((id) => from(this.handleWrapped(id))),
-        )
-      }),
-    )
+    this.subject
+      .pipe(
+        groupBy((id) => id),
+        mergeMap((idGroup$) => {
+          return idGroup$.pipe(
+            debounceTime(5000),
+            concatMap((id) => from(this.handleWrapped(id))),
+          )
+        }),
+      )
+      .subscribe() // need to subscribe or else the handler will not be called
   }
 }
