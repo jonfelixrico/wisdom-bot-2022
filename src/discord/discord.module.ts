@@ -5,6 +5,6 @@ import { MessageService } from './services/message/message.service'
 
 @Module({
   providers: [DISCORD_CLIENT_PROVIDER, UserAvatarService, MessageService],
-  exports: [DISCORD_CLIENT_PROVIDER, UserAvatarService],
+  exports: [DISCORD_CLIENT_PROVIDER, UserAvatarService, MessageService],
 })
 export class DiscordModule {}
