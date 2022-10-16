@@ -1,24 +1,13 @@
 import 'dotenv-defaults/config'
 import { REST, Routes } from 'discord.js'
 import { CommandBuilder } from './types'
-import { ABOUT_COMMAND } from './command-defs/about.command'
-import { RECEIVE_COMMAND } from './command-defs/receive.command'
-import { SUBMIT_COMMAND } from './command-defs/submit.command'
-import { WISDOM_SUBCOMMANDS } from './command-defs/wisdom.subcommands'
 
 const GUILD_IDS =
   process.env.REGISTER_GUILD_IDS?.split(',').map((s) => s.trim()) ?? []
 const DISCORD_TOKEN: string = process.env.DISCORD_TOKEN
 const APPLICATION_ID: string = process.env.APPLICATION_ID
 
-const commands: CommandBuilder[] = [
-  ABOUT_COMMAND,
-  RECEIVE_COMMAND,
-  SUBMIT_COMMAND,
-  WISDOM_SUBCOMMANDS,
-]
-
-async function execute() {
+export async function sendToApi(...commands: CommandBuilder[]) {
   const client = new REST({ version: '10' }).setToken(DISCORD_TOKEN)
 
   if (!GUILD_IDS.length) {
@@ -34,7 +23,6 @@ async function execute() {
     return
   }
 
-  console.log('Registering commands for specific guilds')
   for (const guildId of GUILD_IDS) {
     console.log('Registering commands for %s', guildId)
 
@@ -56,5 +44,3 @@ async function execute() {
     }
   }
 }
-
-execute()
