@@ -36,6 +36,7 @@ export class PendingQuoteDownstreamService {
   }
 
   private async handleWrapped(quoteId: string) {
+    this.LOGGER.debug(`Handling ${quoteId}`)
     try {
       await this.handle(quoteId)
     } catch (e) {
@@ -45,6 +46,7 @@ export class PendingQuoteDownstreamService {
 
   queueForProcessing(quoteId: string) {
     this.subject.next(quoteId)
+    this.LOGGER.debug(`Queued quote ${quoteId}`)
   }
 
   private initListener() {
