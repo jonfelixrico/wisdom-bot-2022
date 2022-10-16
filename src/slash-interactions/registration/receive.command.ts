@@ -1,7 +1,6 @@
-import { CommandToRegister } from './registration.types'
 import { SlashCommandBuilder } from 'discord.js'
 
-const builder = new SlashCommandBuilder()
+export const RECEIVE_COMMAND = new SlashCommandBuilder()
   .setName('receive')
   .setDescription('Receive a random quote')
   /*
@@ -13,8 +12,3 @@ const builder = new SlashCommandBuilder()
       .setDescription('Limit the quotes to the one by this user')
       .setRequired(false)
   })
-
-export const RECEIVE_COMMAND: CommandToRegister = {
-  name: 'receive',
-  builder,
-}

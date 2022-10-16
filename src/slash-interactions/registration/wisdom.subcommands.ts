@@ -1,7 +1,7 @@
-import { CommandToRegister } from './registration.types'
 import { SlashCommandBuilder } from 'discord.js'
+import { CommandBuilder } from 'src/discord/discord.types'
 
-const builder = new SlashCommandBuilder()
+export const WISDOM_SUBCOMMANDS: CommandBuilder = new SlashCommandBuilder()
   .setName('wisdom')
   .setDescription('Classic wisdom commands')
   .addSubcommand((command) => {
@@ -38,8 +38,3 @@ const builder = new SlashCommandBuilder()
           .setRequired(true)
       })
   })
-
-export const WISDOM_SUBCOMMANDS: CommandToRegister = {
-  name: 'classic',
-  builder,
-}

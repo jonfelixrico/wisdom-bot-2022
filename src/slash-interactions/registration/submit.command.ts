@@ -1,7 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js'
-import { CommandToRegister } from './registration.types'
 
-const builder = new SlashCommandBuilder()
+export const SUBMIT_COMMAND = new SlashCommandBuilder()
   .setName('submit')
   .setDescription('Submit a quote')
   .addStringOption((option) => {
@@ -17,8 +16,3 @@ const builder = new SlashCommandBuilder()
       .setDescription('The user who said the quote')
       .setRequired(true)
   })
-
-export const SUBMIT_COMMAND: CommandToRegister = {
-  builder,
-  name: 'submit',
-}

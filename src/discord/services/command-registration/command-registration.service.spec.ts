@@ -1,17 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommandRegistrationServiceObs } from './command-registration.service'
+import { CommandRegistrationService } from './command-registration.service'
 
 describe('CommandRegistrationService', () => {
-  let service: CommandRegistrationServiceObs
+  let service: CommandRegistrationService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CommandRegistrationServiceObs],
+      providers: [CommandRegistrationService],
     }).compile()
 
-    service = module.get<CommandRegistrationServiceObs>(
-      CommandRegistrationServiceObs,
-    )
+    service = module.get<CommandRegistrationService>(CommandRegistrationService)
   })
 
   it('should be defined', () => {

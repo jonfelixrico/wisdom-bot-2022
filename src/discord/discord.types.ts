@@ -3,15 +3,11 @@ import {
   SlashCommandSubcommandsOnlyBuilder,
 } from 'discord.js'
 
+/*
+ * Contains type definitions under the Discord module.
+ */
+
 export type CommandBuilder =
   | SlashCommandBuilder
   | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
   | SlashCommandSubcommandsOnlyBuilder
-
-export interface CommandToRegister {
-  /**
-   * Devland name of the command.
-   */
-  name: string
-  builder: CommandBuilder
-}
