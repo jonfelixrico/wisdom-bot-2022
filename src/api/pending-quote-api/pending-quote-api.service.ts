@@ -49,4 +49,17 @@ export class PendingQuoteApiService {
       throw e
     }
   }
+
+  async getExpiredQuotes(params: { serverId: string }) {
+    const { data } = await this.http.get<GetPendingQuoteRespDto[]>(
+      `server/${params.serverId}/pending-quote`,
+      {
+        params: {
+          expiringBefore: new Date(),
+        },
+      },
+    )
+
+    return data
+  }
 }
