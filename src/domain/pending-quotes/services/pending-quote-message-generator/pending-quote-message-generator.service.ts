@@ -92,13 +92,6 @@ export class PendingQuoteMessageGeneratorService {
   async generateForOngoing(data: PendingData) {
     const embed = await this.generateEmbed(data)
 
-    embed.fields = [
-      {
-        name: SPACE_CHARACTER,
-        value: `This quote needs **${data.requiredVoteCount}** upvotes to be approved`,
-      },
-    ]
-
     const votesAsArray = Object.entries(data.votes ?? [])
       .map(([userId, timestamp]) => {
         return {
@@ -108,10 +101,20 @@ export class PendingQuoteMessageGeneratorService {
       })
       .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
 
+    embed.fields = [
+      {
+        name: SPACE_CHARACTER,
+        value: `This quote needs **${Math.max(
+          0,
+          data.requiredVoteCount - votesAsArray.length,
+        )}** upvotes to be approved`,
+      },
+    ]
+
     if (votesAsArray.length) {
       embed.fields.push({
         name: 'Upvotes',
-        value: votesAsArray.map(({ userId }) => `* <@${userId}>`).join('\n'),
+        value: votesAsArray.map(({ userId }) => `- <@${userId}>`).join('\n'),
       })
     }
 
