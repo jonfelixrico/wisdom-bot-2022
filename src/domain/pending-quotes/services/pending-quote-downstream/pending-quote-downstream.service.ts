@@ -4,12 +4,14 @@ import { sprintf } from 'sprintf'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 
 @Injectable()
-export class PendingQuoteDownstreamService implements OnApplicationBootstrap {
+export class PendingQuoteDownstreamService {
   private readonly LOGGER = new Logger(PendingQuoteDownstreamService.name)
 
   private subject = new Subject<string>()
 
-  constructor(private api: PendingQuoteApiService) {}
+  constructor(private api: PendingQuoteApiService) {
+    this.initListener()
+  }
 
   private async handle(quoteId: string) {
     const quoteData = await this.api.get({ quoteId })
@@ -37,7 +39,7 @@ export class PendingQuoteDownstreamService implements OnApplicationBootstrap {
     this.subject.next(quoteId)
   }
 
-  onApplicationBootstrap() {
+  private initListener() {
     this.subject
       .pipe(
         groupBy((id) => id),
