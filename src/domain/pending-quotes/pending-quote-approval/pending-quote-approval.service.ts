@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pending-quote-dto.interface'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { MessageService } from 'src/discord/services/message/message.service'
 import { PendingQuoteMessageGeneratorService } from '../services/pending-quote-message-generator/pending-quote-message-generator.service'
@@ -13,12 +14,11 @@ export class PendingQuoteApprovalService {
     private msgGen: PendingQuoteMessageGeneratorService,
   ) {}
 
-  async processApproval(quoteId: string) {
+  async processApproval(quote: GetPendingQuoteRespDto) {
     const { LOGGER } = this
-    LOGGER.debug(`Handling the approval of quote ${quoteId}`)
+    LOGGER.debug(`Handling the approval of quote ${quote.id}`)
 
     try {
-      const quote = await this.api.get({ quoteId })
       const message = await this.msgSvc.getMessage(quote)
 
       await this.api.finalizeStatus({
@@ -42,7 +42,7 @@ export class PendingQuoteApprovalService {
       })
     } catch (e) {
       LOGGER.error(
-        `Error encountered while processing the approval of quote ${quoteId}`,
+        `Error encountered while processing the approval of quote ${quote.id}`,
         e,
       )
     }

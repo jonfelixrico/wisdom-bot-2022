@@ -64,7 +64,7 @@ export class PendingQuoteDownstreamService {
       // check if quote has reached enough numbers of upvotes
       Object.values(quoteData.votes ?? {}).length >= quoteData.requiredVoteCount
     ) {
-      await this.approveSvc.processApproval(quoteId)
+      await this.approveSvc.processApproval(quoteData)
     } else {
       await this.reRenderOngoing(quoteData)
     }
