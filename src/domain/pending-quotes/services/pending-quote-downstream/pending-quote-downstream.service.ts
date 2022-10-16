@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { Client } from 'discord.js'
 import { concatMap, debounceTime, from, groupBy, mergeMap, Subject } from 'rxjs'
-import { sprintf } from 'sprintf'
+import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pending-quote-dto.interface'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
+import { PendingQuoteMessageGeneratorService } from '../pending-quote-message-generator/pending-quote-message-generator.service'
 
 @Injectable()
 export class PendingQuoteDownstreamService {
@@ -9,14 +11,55 @@ export class PendingQuoteDownstreamService {
 
   private subject = new Subject<string>()
 
-  constructor(private api: PendingQuoteApiService) {
+  constructor(
+    private api: PendingQuoteApiService,
+    private client: Client,
+    private msgGen: PendingQuoteMessageGeneratorService,
+  ) {
     this.initListener()
+  }
+
+  private async getMessage(channelId: string, messageId: string) {
+    const channel = await this.client.channels.fetch(channelId)
+    if (!channel.isTextBased()) {
+      return null
+    }
+
+    return await channel.messages.fetch(messageId)
+  }
+
+  private async handleOngoing(dto: GetPendingQuoteRespDto) {
+    const { LOGGER } = this
+
+    const { id } = dto
+
+    LOGGER.debug(`Updating message for ongoing quote ${id}`)
+    try {
+      const message = await this.getMessage(dto.channelId, dto.messageId)
+      if (!message) {
+        return
+      }
+
+      await message.edit(
+        await this.msgGen.generateForOngoing({
+          ...dto,
+          year: new Date(dto.submitDt).getFullYear(),
+        }),
+      )
+
+      LOGGER.debug(`Re-rendered the message for quote ${id}`)
+    } catch (e) {
+      LOGGER.error(
+        `Error encountered while re-rendering the message of quote ${id}`,
+        e,
+      )
+    }
   }
 
   private async handle(quoteId: string) {
     const quoteData = await this.api.get({ quoteId })
     if (!quoteData) {
-      this.LOGGER.warn(sprintf('Did not find pending quote %s', quoteId))
+      this.LOGGER.warn(`Did not find pending quote ${quoteId}`)
       return
     }
 
@@ -31,7 +74,7 @@ export class PendingQuoteDownstreamService {
       // send finalization API call
       // render
     } else {
-      // render
+      await this.handleOngoing(quoteData)
     }
   }
 
