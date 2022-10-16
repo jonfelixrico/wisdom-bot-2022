@@ -21,7 +21,7 @@ interface Data {
 interface PendingData extends Data {
   requiredVoteCount: number
   id: string
-  votes: Record<string, Date>
+  votes: Record<string, Date | string>
 }
 
 @Injectable()
@@ -98,6 +98,22 @@ export class PendingQuoteMessageGeneratorService {
         value: `This quote needs **${data.requiredVoteCount}** upvotes to be approved`,
       },
     ]
+
+    const votesAsArray = Object.entries(data.votes ?? [])
+      .map(([userId, timestamp]) => {
+        return {
+          userId,
+          timestamp: new Date(timestamp),
+        }
+      })
+      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+
+    if (votesAsArray.length) {
+      embed.fields.push({
+        name: 'Upvotes',
+        value: votesAsArray.map(({ userId }) => `* <@${userId}>`).join('\n'),
+      })
+    }
 
     return {
       embeds: [embed],
