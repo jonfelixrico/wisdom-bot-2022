@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config'
 import { SystemModule } from './system/system.module'
 import { ApiModule } from './api/api.module'
 import { ButtonInteractionsModule } from './button-interactions/button-interactions.module'
+import { PendingQuotesModule } from './domain/pending-quotes/pending-quotes.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ButtonInteractionsModule } from './button-interactions/button-interacti
     SystemModule,
     ApiModule,
     ButtonInteractionsModule,
+    PendingQuotesModule,
   ],
   controllers: [],
   providers: [],
