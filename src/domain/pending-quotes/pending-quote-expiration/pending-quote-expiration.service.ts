@@ -52,6 +52,7 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
 
   private async doExpiredQuoteSweep(serverId: string) {
     const { LOGGER } = this
+
     const expiredQuotes = await this.api.getExpiredQuotes({ serverId })
     if (!expiredQuotes?.length) {
       LOGGER.debug(`No expiring quotes found for ${serverId}`)
@@ -59,7 +60,14 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
     }
 
     for (const quote of expiredQuotes) {
-      await this.processExpiration(quote)
+      try {
+        await this.processExpiration(quote)
+      } catch (e) {
+        LOGGER.error(
+          `Uncaught exception while running the expiration process for quote ${quote.id}`,
+          e,
+        )
+      }
     }
   }
 
