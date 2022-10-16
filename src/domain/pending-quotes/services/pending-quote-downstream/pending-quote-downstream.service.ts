@@ -28,7 +28,7 @@ export class PendingQuoteDownstreamService {
     return await channel.messages.fetch(messageId)
   }
 
-  private async handleOngoing(dto: GetPendingQuoteRespDto) {
+  private async reRenderOngoing(dto: GetPendingQuoteRespDto) {
     const { LOGGER } = this
 
     const { id } = dto
@@ -74,7 +74,7 @@ export class PendingQuoteDownstreamService {
       // send finalization API call
       // render
     } else {
-      await this.handleOngoing(quoteData)
+      await this.reRenderOngoing(quoteData)
     }
   }
 
