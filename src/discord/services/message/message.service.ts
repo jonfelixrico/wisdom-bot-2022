@@ -22,7 +22,7 @@ export class MessageService {
        * TODO once sharding is implemented, we have to switch to retrieving the server first, then the channel.
        * See note in https://discord.js.org/#/docs/discord.js/main/class/Client?scrollTo=channels
        */
-      await this.client.channels.fetch(channelId)
+      channel = await this.client.channels.fetch(channelId)
       if (!channel.isTextBased()) {
         LOGGER.debug(
           `Tried to get message ${messageId} from channel ${channelId}, but the latter is not a text channel`,
