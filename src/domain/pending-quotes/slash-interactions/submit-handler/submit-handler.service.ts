@@ -61,7 +61,7 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
     }
   }
 
-  onApplicationBootstrap() {
+  async onApplicationBootstrap() {
     this.client.on('interactionCreate', (interaction) => {
       if (!interaction.isChatInputCommand()) {
         return
