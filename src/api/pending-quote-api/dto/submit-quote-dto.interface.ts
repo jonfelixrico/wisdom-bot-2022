@@ -1,4 +1,4 @@
-export interface SubmitQuoteInput {
+export interface SubmitQuoteReqDto {
   serverId: string
   content: string
   authorId: string
@@ -7,6 +7,6 @@ export interface SubmitQuoteInput {
   messageId: string
 }
 
-export interface SubmitQuoteOutput {
+export interface SubmitQuoteRespDto {
   quoteId: string
 }

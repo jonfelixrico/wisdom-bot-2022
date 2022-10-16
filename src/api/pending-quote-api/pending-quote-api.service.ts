@@ -1,16 +1,17 @@
 import { HttpService } from 'nestjs-http-promise'
 import { Injectable } from '@nestjs/common'
 import {
-  SubmitQuoteInput,
-  SubmitQuoteOutput,
-} from './model/submit-quote-io.interface'
+  SubmitQuoteReqDto,
+  SubmitQuoteRespDto,
+} from './dto/submit-quote-dto.interface'
+import { GetPendingQuoteRespDto } from './dto/get-pending-quote-dto.interface'
 
 @Injectable()
 export class PendingQuoteApiService {
   constructor(private http: HttpService) {}
 
-  async submit({ serverId, ...others }: SubmitQuoteInput) {
-    const { data } = await this.http.post<SubmitQuoteOutput>(
+  async submit({ serverId, ...others }: SubmitQuoteReqDto) {
+    const { data } = await this.http.post<SubmitQuoteRespDto>(
       `server/${serverId}/quote/pending`,
       others,
     )
@@ -34,5 +35,18 @@ export class PendingQuoteApiService {
         status: 'APPROVED',
       },
     )
+  }
+
+  async get(reqParams: { quoteId: string }): Promise<GetPendingQuoteRespDto> {
+    try {
+      const { data } = await this.http.get(`quote/pending/${reqParams.quoteId}`)
+      return data
+    } catch (e) {
+      if (e.response?.status === 404) {
+        return null
+      }
+
+      throw e
+    }
   }
 }
