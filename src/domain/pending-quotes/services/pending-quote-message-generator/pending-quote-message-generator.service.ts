@@ -124,7 +124,7 @@ export class PendingQuoteMessageGeneratorService {
     }
   }
 
-  async generateForApprove(data: Data) {
+  async generateForApproval(data: Data) {
     const embed = await this.generateEmbed(data)
 
     embed.fields = [
@@ -137,6 +137,7 @@ export class PendingQuoteMessageGeneratorService {
 
     return {
       embeds: [embed],
+      components: [], // to clear the buttons from before
     }
   }
 }
