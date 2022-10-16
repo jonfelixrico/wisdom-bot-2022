@@ -56,6 +56,42 @@ export class PendingQuoteDownstreamService {
     }
   }
 
+  private async processApproval(dto: GetPendingQuoteRespDto) {
+    const { LOGGER } = this
+    const { id } = dto
+
+    LOGGER.debug(`Handling the approval of quote ${id}`)
+
+    try {
+      const message = await this.getMessage(dto.channelId, dto.messageId)
+
+      await this.api.finalizeStatus({
+        serverId: dto.serverId,
+        quoteId: id,
+      })
+      LOGGER.debug(`Finalized status of quote ${id} as approved`)
+
+      await message.edit(
+        await this.msgGen.generateForApproval({
+          ...dto,
+          year: new Date(dto.submitDt).getFullYear(),
+        }),
+      )
+
+      await message.channel.send({
+        reply: {
+          messageReference: message,
+        },
+        content: 'A quote has been approved 🎊🎉',
+      })
+    } catch (e) {
+      LOGGER.error(
+        `Error encountered while processing the approval of quote ${id}`,
+        e,
+      )
+    }
+  }
+
   private async handle(quoteId: string) {
     const quoteData = await this.api.get({ quoteId })
     if (!quoteData) {
@@ -68,11 +104,9 @@ export class PendingQuoteDownstreamService {
       // render
     } else if (
       // check if quote has reached enough numbers of view
-      quoteData.requiredVoteCount ===
-      Object.values(quoteData?.votes ?? {}).length
+      Object.values(quoteData?.votes ?? {}).length >= 1
     ) {
-      // send finalization API call
-      // render
+      await this.processApproval(quoteData)
     } else {
       await this.reRenderOngoing(quoteData)
     }
