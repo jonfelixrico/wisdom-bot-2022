@@ -33,7 +33,7 @@ export class PendingQuoteApiService {
     status: 'APPROVED' | 'EXPIRED'
   }) {
     await this.http.post(`pending-quotes/${data.quoteId}/status`, {
-      status,
+      status: data.status,
     })
   }
 
