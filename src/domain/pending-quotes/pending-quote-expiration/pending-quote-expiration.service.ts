@@ -44,7 +44,7 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
       })
     } catch (e) {
       LOGGER.error(
-        `Error encountered while processing the approval of quote ${quote.id}`,
+        `Error encountered while processing the expiration of quote ${quote.id}`,
         e,
       )
     }
