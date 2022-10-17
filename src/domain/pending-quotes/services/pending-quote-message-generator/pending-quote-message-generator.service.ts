@@ -104,6 +104,7 @@ export class PendingQuoteMessageGeneratorService {
     embed.fields = [
       {
         name: SPACE_CHARACTER,
+        // TODO add text for indicating expiration
         value: `This quote needs **${Math.max(
           0,
           data.requiredVoteCount - votesAsArray.length,
@@ -134,6 +135,23 @@ export class PendingQuoteMessageGeneratorService {
       },
     ]
     embed.author.name = '✅ Quote Submitted'
+
+    return {
+      embeds: [embed],
+      components: [], // to clear the buttons from before
+    }
+  }
+
+  async generateForExpiration(data: Data) {
+    const embed = await this.generateEmbed(data)
+
+    embed.fields = [
+      {
+        name: SPACE_CHARACTER,
+        value: '❌ This quote has expired',
+      },
+    ]
+    embed.author.name = '❌ Quote Submitted'
 
     return {
       embeds: [embed],

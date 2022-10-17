@@ -28,13 +28,13 @@ export class PendingQuoteApiService {
     )
   }
 
-  async finalizeStatus(data: { serverId: string; quoteId: string }) {
-    await this.http.post(
-      `server/${data.serverId}/quote/pending/${data.quoteId}/status`,
-      {
-        status: 'APPROVED',
-      },
-    )
+  async finalizeStatus(data: {
+    quoteId: string
+    status: 'APPROVED' | 'EXPIRED'
+  }) {
+    await this.http.post(`pending-quotes/${data.quoteId}/status`, {
+      status: data.status,
+    })
   }
 
   async get(reqParams: { quoteId: string }): Promise<GetPendingQuoteRespDto> {
@@ -48,5 +48,18 @@ export class PendingQuoteApiService {
 
       throw e
     }
+  }
+
+  async getExpiredQuotes(params: { serverId: string }) {
+    const { data } = await this.http.get<GetPendingQuoteRespDto[]>(
+      `server/${params.serverId}/pending-quote`,
+      {
+        params: {
+          expiringBefore: new Date(),
+        },
+      },
+    )
+
+    return data
   }
 }
