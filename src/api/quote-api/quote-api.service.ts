@@ -7,11 +7,8 @@ import { ReceiveQuoteInput } from './model/receive-quote-io.interface'
 export class QuoteApiService {
   constructor(private http: HttpService) {}
 
-  async receive({ serverId, quoteId, ...others }: ReceiveQuoteInput) {
-    await this.http.post<void>(
-      `server/${serverId}/quote/${quoteId}/receive`,
-      others,
-    )
+  async receive({ quoteId, ...others }: ReceiveQuoteInput) {
+    await this.http.post<void>(`quote/${quoteId}/receive`, others)
   }
 
   async getRandomQuote(
