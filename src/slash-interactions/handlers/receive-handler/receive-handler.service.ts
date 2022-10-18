@@ -65,7 +65,6 @@ export class ReceiveHandlerService {
 
     try {
       await this.api.receive({
-        serverId: guildId,
         channelId: interaction.channelId,
         quoteId: randomQuote.id,
         receiverId: interaction.user.id,
