@@ -36,7 +36,7 @@ export class PendingQuoteApiService {
 
   async get(reqParams: { quoteId: string }): Promise<GetPendingQuoteRespDto> {
     try {
-      const { data } = await this.http.get(`quote/pending/${reqParams.quoteId}`)
+      const { data } = await this.http.get(`pending-quote/${reqParams.quoteId}`)
       return data
     } catch (e) {
       if (e.response?.status === 404) {
