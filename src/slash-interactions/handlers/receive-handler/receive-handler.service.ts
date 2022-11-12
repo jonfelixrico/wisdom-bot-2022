@@ -1,5 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ChatInputCommandInteraction, Client, Guild } from 'discord.js'
+import { RECEIVE_COMMAND_NAME } from 'scripts/command-registration/command-defs/receive.command'
+import {
+  WISDOM_COMMAND_NAME,
+  WISDOM_RECEIVE_SUBCOMMAND_NAME,
+} from 'scripts/command-registration/command-defs/wisdom.subcommands'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import {
   generateErrorReply,
@@ -89,9 +94,10 @@ export class ReceiveHandlerService {
       }
 
       if (
-        interaction.commandName === 'receive' ||
-        (interaction.commandName === 'wisdom' &&
-          interaction.options.getSubcommand() === 'receive')
+        interaction.commandName === RECEIVE_COMMAND_NAME ||
+        (interaction.commandName === WISDOM_COMMAND_NAME &&
+          interaction.options.getSubcommand() ===
+            WISDOM_RECEIVE_SUBCOMMAND_NAME)
       ) {
         this.handle(interaction)
       }
