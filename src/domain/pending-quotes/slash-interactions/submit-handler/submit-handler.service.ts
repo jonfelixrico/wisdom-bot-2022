@@ -1,5 +1,10 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { ChatInputCommandInteraction, Client } from 'discord.js'
+import { SUBMIT_COMMAND_NAME } from 'scripts/command-registration/command-defs/submit.command'
+import {
+  WISDOM_COMMAND_NAME,
+  WISDOM_SUBMIT_SUBCOMMAND_NAME,
+} from 'scripts/command-registration/command-defs/wisdom.subcommands'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { PendingQuoteMessageGeneratorService } from '../../services/pending-quote-message-generator/pending-quote-message-generator.service'
 
@@ -68,9 +73,9 @@ export class SubmitHandlerService implements OnApplicationBootstrap {
       }
 
       if (
-        interaction.commandName === 'submit' ||
-        (interaction.commandName === 'wisdom' &&
-          interaction.options.getSubcommand() === 'submit')
+        interaction.commandName === SUBMIT_COMMAND_NAME ||
+        (interaction.commandName === WISDOM_COMMAND_NAME &&
+          interaction.options.getSubcommand() === WISDOM_SUBMIT_SUBCOMMAND_NAME)
       ) {
         this.handle(interaction)
       }
