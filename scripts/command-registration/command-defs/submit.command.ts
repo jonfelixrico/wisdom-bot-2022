@@ -1,7 +1,9 @@
 import { SlashCommandBuilder } from 'discord.js'
 
+export const SUBMIT_COMMAND_NAME = 'submit'
+
 export const SUBMIT_COMMAND = new SlashCommandBuilder()
-  .setName('submit')
+  .setName(SUBMIT_COMMAND_NAME)
   .setDescription('Submit a quote')
   .addStringOption((option) => {
     return option
