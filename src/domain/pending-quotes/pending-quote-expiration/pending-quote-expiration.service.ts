@@ -25,7 +25,7 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
         quoteId: quote.id,
         status: 'EXPIRED',
       })
-      LOGGER.debug(`Finalized status of quote ${quote.id} as expired`)
+      LOGGER.verbose(`Finalized status of quote ${quote.id} as expired`)
 
       const message = await this.msgSvc.getMessage(quote)
       await message.edit(
@@ -55,7 +55,7 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
 
     const expiredQuotes = await this.api.getExpiredQuotes({ serverId })
     if (!expiredQuotes?.length) {
-      LOGGER.debug(`No expiring quotes found for ${serverId}`)
+      LOGGER.verbose(`No expiring quotes found for ${serverId}`)
       return
     }
 
@@ -75,7 +75,7 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
   private async runExpiredQuoteRoutine() {
     const { LOGGER } = this
 
-    LOGGER.verbose('Running routine for sweeping for expired quotes')
+    LOGGER.log('Running routine for sweeping for expired quotes')
     const guildIds = Array.from(this.client.guilds.cache.keys())
     for (const guildId of guildIds) {
       try {
@@ -84,7 +84,7 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
         LOGGER.error(`Expired quote sweep failed for server ${guildId}`, e)
       }
     }
-    LOGGER.verbose('Finished the sweep routine')
+    LOGGER.log('Finished the sweep routine')
   }
 
   onApplicationBootstrap() {
