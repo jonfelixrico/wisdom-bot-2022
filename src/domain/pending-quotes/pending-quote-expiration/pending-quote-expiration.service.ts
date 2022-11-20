@@ -4,7 +4,7 @@ import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-
 import { MessageService } from 'src/discord/services/message/message.service'
 import { PendingQuoteMessageGeneratorService } from '../services/pending-quote-message-generator/pending-quote-message-generator.service'
 import { Cron } from '@nestjs/schedule'
-import { Client } from 'discord.js'
+import { Client, Message } from 'discord.js'
 @Injectable()
 export class PendingQuoteExpirationService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(PendingQuoteExpirationService.name)
@@ -21,7 +21,40 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
       quoteId: id,
       status: 'EXPIRED',
     })
-    this.LOGGER.verbose(`Finalized status of quote ${id} as expired`)
+  }
+
+  private async finalizeAsExpiredAndNotify(quote: GetPendingQuoteRespDto) {
+    const { LOGGER } = this
+    let message: Message
+    try {
+      message = await this.msgSvc.getMessage(quote)
+    } catch (e) {
+      LOGGER.warn(
+        `Encountered error when trying to retrieve message for quote ${quote.id} from  ${quote.serverId}/${quote.channelId}. Process will carry on.`,
+        e,
+      )
+    }
+
+    await this.finalizeAsExpired(quote)
+    LOGGER.verbose(`Flagged ${quote.id} as expired.`)
+
+    if (message) {
+      try {
+        await message.edit(
+          await this.msgGen.generateForExpiration({
+            ...quote,
+            year: new Date(quote.submitDt).getFullYear(),
+          }),
+        )
+        LOGGER.debug(
+          `Sent notification that quote ${quote.id} has expired to ${quote.serverId}/${quote.channelId}`,
+        )
+      } catch (e) {
+        LOGGER.warn(
+          `Failed to send notification that quote ${quote.id} is expired to ${quote.serverId}/${quote.channelId}`,
+        )
+      }
+    }
   }
 
   async processExpiration(quote: GetPendingQuoteRespDto) {
@@ -29,23 +62,15 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
     LOGGER.debug(`Handling the expiration of quote ${quote.id}`)
 
     try {
-      this.finalizeAsExpired(quote)
+      if (!quote.messageId || !quote.channelId) {
+        await this.finalizeAsExpired(quote)
+        LOGGER.verbose(
+          `Flagged ${quote.id} as expired w/o message notifications.`,
+        )
+        return
+      }
 
-      const message = await this.msgSvc.getMessage(quote)
-      await message.edit(
-        await this.msgGen.generateForExpiration({
-          ...quote,
-          year: new Date(quote.submitDt).getFullYear(),
-        }),
-      )
-
-      await message.channel.send({
-        reply: {
-          messageReference: message,
-        },
-        content:
-          'This quote failed to reach the required number of upvotes before the deadline',
-      })
+      await this.finalizeAsExpiredAndNotify(quote)
     } catch (e) {
       LOGGER.error(
         `Error encountered while processing the expiration of quote ${quote.id}`,
