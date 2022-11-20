@@ -16,16 +16,20 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
     private client: Client,
   ) {}
 
+  private async finalizeAsExpired({ id }: GetPendingQuoteRespDto) {
+    await this.api.finalizeStatus({
+      quoteId: id,
+      status: 'EXPIRED',
+    })
+    this.LOGGER.verbose(`Finalized status of quote ${id} as expired`)
+  }
+
   async processExpiration(quote: GetPendingQuoteRespDto) {
     const { LOGGER } = this
     LOGGER.debug(`Handling the expiration of quote ${quote.id}`)
 
     try {
-      await this.api.finalizeStatus({
-        quoteId: quote.id,
-        status: 'EXPIRED',
-      })
-      LOGGER.verbose(`Finalized status of quote ${quote.id} as expired`)
+      this.finalizeAsExpired(quote)
 
       const message = await this.msgSvc.getMessage(quote)
       await message.edit(
