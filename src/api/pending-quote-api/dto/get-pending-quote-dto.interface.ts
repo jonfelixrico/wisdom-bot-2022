@@ -15,7 +15,9 @@ export class GetPendingQuoteRespDto {
    */
   votes: Record<string, string>
 
-  messageId: string
-  channelId: string
+  isLegacy?: boolean
+  messageId?: string
+  channelId?: string
+
   serverId: string
 }
