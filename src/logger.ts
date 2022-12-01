@@ -7,7 +7,7 @@ export const WINSTON_LOGGER = WinstonModule.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.timestamp({
-          format: 'isoDateTime',
+          format: () => new Date().toUTCString(),
         }),
         winston.format.ms(),
         utilities.format.nestLike('MyApp', {
@@ -21,6 +21,7 @@ export const WINSTON_LOGGER = WinstonModule.createLogger({
       zippedArchive: true,
       maxSize: '20m',
       maxFiles: '14d',
+      utc: true,
     }),
   ],
 })
