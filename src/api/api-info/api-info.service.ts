@@ -5,7 +5,7 @@ import { HttpService } from 'nestjs-http-promise'
 export class ApiInfoService {
   constructor(private http: HttpService) {}
 
-  private async getVersion(): Promise<string> {
+  async getVersion(): Promise<string> {
     const { data } = await this.http.get<{ version: string }>('/version')
     return data.version
   }
