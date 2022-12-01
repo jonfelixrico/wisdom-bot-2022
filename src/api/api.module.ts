@@ -17,6 +17,6 @@ import { ApiInfoService } from './api-info/api-info.service'
     }),
   ],
   providers: [PendingQuoteApiService, QuoteApiService, ApiInfoService],
-  exports: [PendingQuoteApiService, QuoteApiService],
+  exports: [PendingQuoteApiService, QuoteApiService, ApiInfoService],
 })
 export class ApiModule {}
