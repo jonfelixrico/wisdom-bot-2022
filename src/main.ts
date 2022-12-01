@@ -9,7 +9,9 @@ async function bootstrap() {
       transports: [
         new winston.transports.Console({
           format: winston.format.combine(
-            winston.format.timestamp(),
+            winston.format.timestamp({
+              format: 'isoDateTime',
+            }),
             winston.format.ms(),
             utilities.format.nestLike('MyApp', {
               colors: true,
