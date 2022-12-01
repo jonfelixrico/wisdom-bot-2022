@@ -10,7 +10,7 @@ export const WINSTON_LOGGER = WinstonModule.createLogger({
           format: () => new Date().toUTCString(),
         }),
         winston.format.ms(),
-        utilities.format.nestLike('MyApp', {
+        utilities.format.nestLike('Wisdom', {
           colors: true,
         }),
       ),
@@ -22,6 +22,16 @@ export const WINSTON_LOGGER = WinstonModule.createLogger({
       maxSize: '20m',
       maxFiles: '14d',
       utc: true,
+      // TODO find a better formatter
+      format: winston.format.combine(
+        winston.format.timestamp({
+          format: () => new Date().toUTCString(),
+        }),
+        winston.format.ms(),
+        utilities.format.nestLike('Wisdom', {
+          colors: false,
+        }),
+      ),
     }),
   ],
 })
