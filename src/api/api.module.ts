@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { API_BASE_URL } from 'src/env-vars.constants'
 import { PendingQuoteApiService } from './pending-quote-api/pending-quote-api.service'
 import { QuoteApiService } from './quote-api/quote-api.service'
+import { ApiInfoService } from './api-info/api-info.service'
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { QuoteApiService } from './quote-api/quote-api.service'
       inject: [ConfigService],
     }),
   ],
-  providers: [PendingQuoteApiService, QuoteApiService],
+  providers: [PendingQuoteApiService, QuoteApiService, ApiInfoService],
   exports: [PendingQuoteApiService, QuoteApiService],
 })
 export class ApiModule {}
