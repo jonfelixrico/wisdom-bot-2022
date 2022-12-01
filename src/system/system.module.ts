@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common'
-import { BotInfoService } from './bot-info/bot-info.service'
-import { ServerInfoService } from './server-info/server-info.service'
+import { AppInfoService } from './app-info/app-info.service'
 
 @Module({
-  providers: [BotInfoService, ServerInfoService],
-  exports: [BotInfoService, ServerInfoService],
+  providers: [AppInfoService],
+  exports: [AppInfoService],
 })
 export class SystemModule {}

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { version } from 'package.json'
 
 @Injectable()
-export class BotInfoService {
+export class AppInfoService {
   /**
    * Get the version of this bot.
    */

@@ -5,16 +5,16 @@ import {
   WISDOM_ABOUT_SUBCOMMAND_NAME,
   WISDOM_COMMAND_NAME,
 } from 'scripts/command-registration/command-defs/wisdom.subcommands'
-import { BotInfoService } from 'src/system/bot-info/bot-info.service'
+import { AppInfoService } from 'src/system/app-info/app-info.service'
 
 @Injectable()
 export class AboutHandlerService {
-  constructor(private botInfoSvc: BotInfoService, private client: Client) {}
+  constructor(private infoSvc: AppInfoService, private client: Client) {}
 
   private handle(interaction: ChatInputCommandInteraction) {
     interaction.reply({
       ephemeral: true,
-      content: this.botInfoSvc.version,
+      content: this.infoSvc.version,
     })
   }
 
