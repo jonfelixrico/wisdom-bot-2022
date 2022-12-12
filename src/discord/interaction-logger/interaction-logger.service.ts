@@ -26,7 +26,7 @@ export class InteractionLoggerService implements OnApplicationBootstrap {
     const subCommand = interaction.options.getSubcommand()
     const command = interaction.commandName
     if (subCommandGroup) {
-      LOGGER.debug(
+      LOGGER.verbose(
         formatMessage(
           interaction,
           sprintf(
@@ -38,23 +38,27 @@ export class InteractionLoggerService implements OnApplicationBootstrap {
         ),
       )
     } else if (subCommand) {
-      LOGGER.debug(
+      LOGGER.verbose(
         formatMessage(
           interaction,
           sprintf('Invoked command %s %s', command, subCommand),
         ),
       )
     } else {
-      formatMessage(interaction, sprintf('Invoked command %s', command))
+      LOGGER.verbose(
+        formatMessage(interaction, sprintf('Invoked command %s', command)),
+      )
     }
   }
 
   onApplicationBootstrap() {
     const { LOGGER } = this
 
+    LOGGER.debug('Interaction logger is now ready.')
+
     this.client.on('interactionCreate', (interaction) => {
       if (interaction.isButton()) {
-        LOGGER.debug(
+        LOGGER.verbose(
           formatMessage(
             interaction,
             sprintf(
