@@ -30,7 +30,7 @@ export class InteractionLoggerService implements OnApplicationBootstrap {
         formatMessage(
           interaction,
           sprintf(
-            'Invoked command %s %s %s',
+            'Invoked command "%s %s %s"',
             command,
             subCommandGroup,
             subCommand,
@@ -41,12 +41,12 @@ export class InteractionLoggerService implements OnApplicationBootstrap {
       LOGGER.verbose(
         formatMessage(
           interaction,
-          sprintf('Invoked command %s %s', command, subCommand),
+          sprintf('Invoked command "%s %s"', command, subCommand),
         ),
       )
     } else {
       LOGGER.verbose(
-        formatMessage(interaction, sprintf('Invoked command %s', command)),
+        formatMessage(interaction, sprintf('Invoked command "%s"', command)),
       )
     }
   }
