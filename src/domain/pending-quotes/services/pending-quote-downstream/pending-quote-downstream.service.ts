@@ -51,39 +51,6 @@ export class PendingQuoteDownstreamService {
     }
   }
 
-  async processApproval(quote: GetPendingQuoteRespDto) {
-    const { LOGGER } = this
-    LOGGER.debug(`Handling the approval of quote ${quote.id}`)
-
-    try {
-      await this.api.finalizeStatus({
-        quoteId: quote.id,
-        status: 'APPROVED',
-      })
-      LOGGER.debug(`Finalized status of quote ${quote.id} as approved`)
-
-      const message = await this.msgSvc.getMessage(quote)
-      await message.edit(
-        await this.msgGen.generateForApproval({
-          ...quote,
-          year: new Date(quote.submitDt).getFullYear(),
-        }),
-      )
-
-      await message.channel.send({
-        reply: {
-          messageReference: message,
-        },
-        content: 'This quote has been approved 🎊🎉',
-      })
-    } catch (e) {
-      LOGGER.error(
-        `Error encountered while processing the approval of quote ${quote.id}`,
-        e,
-      )
-    }
-  }
-
   private async handle(quoteId: string) {
     this.LOGGER.debug(`Handling ${quoteId}`)
     try {
