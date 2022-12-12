@@ -3,7 +3,10 @@ import { REST, Routes } from 'discord.js'
 import { CommandBuilder } from './types'
 
 const GUILD_IDS =
-  process.env.REGISTER_GUILD_IDS?.split(',').map((s) => s.trim()) ?? []
+  process.env.REGISTER_GUILD_IDS?.replace(/\s/g, '')
+    .split(',')
+    .filter((str) => str.length) ?? []
+
 const DISCORD_TOKEN: string = process.env.DISCORD_TOKEN
 const APPLICATION_ID: string = process.env.APPLICATION_ID
 
