@@ -85,25 +85,6 @@ export class PendingQuoteDownstreamService {
   }
 
   private async handle(quoteId: string) {
-    const quoteData = await this.api.get({ quoteId })
-    if (!quoteData) {
-      this.LOGGER.warn(`Did not find pending quote ${quoteId}`)
-      return
-    }
-
-    if (new Date() > new Date(quoteData.expirationDt)) {
-      await this.expireSvc.processExpiration(quoteData)
-    } else if (
-      // check if quote has reached enough numbers of upvotes
-      Object.values(quoteData.votes ?? {}).length >= quoteData.requiredVoteCount
-    ) {
-      await this.approveSvc.processApproval(quoteData)
-    } else {
-      await this.reRenderOngoing(quoteData)
-    }
-  }
-
-  private async handleWrapped(quoteId: string) {
     this.LOGGER.debug(`Handling ${quoteId}`)
     try {
       const quoteData = await this.api.get({ quoteId })
@@ -119,7 +100,7 @@ export class PendingQuoteDownstreamService {
         Object.values(quoteData.votes ?? {}).length >=
         quoteData.requiredVoteCount
       ) {
-        await this.processApproval(quoteData)
+        await this.approveSvc.processApproval(quoteData)
       } else {
         await this.reRenderOngoing(quoteData)
       }
