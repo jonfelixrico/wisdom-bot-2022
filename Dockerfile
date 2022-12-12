@@ -1,20 +1,25 @@
 # Base image
-FROM node:16.18-alpine
+FROM node:16.18-alpine AS base
+RUN npm i -g pnpm
 
-# Create app directory
-WORKDIR /usr/src/app
+FROM base AS dependencies
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
-# Install app dependencies
-RUN npm install
+FROM base AS build
 
-# Bundle app source
+WORKDIR /app
 COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
+RUN pnpm build
+RUN pnpm prune --prod
 
-# Creates a "dist" folder with the production build
-RUN npm run build
+FROM base AS deploy
 
-# Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+WORKDIR /app
+COPY --from=build /app/dist ./dist/
+COPY --from=build /app/node_modules ./node_modules
+
+CMD ["node", "dist/src/main.js"]
