@@ -6,7 +6,7 @@ import { SubmitHandlerService } from './slash-interactions/submit-handler/submit
 import { PendingQuoteDownstreamService } from './services/pending-quote-downstream/pending-quote-downstream.service'
 import { PendingQuoteMessageGeneratorService } from './services/pending-quote-message-generator/pending-quote-message-generator.service'
 import { PendingQuoteExpirationService } from './services/pending-quote-expiration/pending-quote-expiration.service'
-import { PendingQuoteApprovalService } from './pending-quote-approval/pending-quote-approval.service'
+import { PendingQuoteApprovalService } from './services/pending-quote-approval/pending-quote-approval.service'
 
 @Module({
   providers: [
