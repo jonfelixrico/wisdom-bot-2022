@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js'
 import { CommandBuilder } from '../types'
 
-export const WISDOM_COMMAND_NAME = 'wisdombeta' // TODO change to just "wisdom" on release
+export const WISDOM_COMMAND_NAME = 'wisdom' // TODO change to just "wisdom" on release
 export const WISDOM_SUBMIT_SUBCOMMAND_NAME = 'submit'
 export const WISDOM_RECEIVE_SUBCOMMAND_NAME = 'receive'
 export const WISDOM_ABOUT_SUBCOMMAND_NAME = 'about'
