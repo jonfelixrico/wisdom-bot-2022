@@ -22,8 +22,8 @@ export class InteractionLoggerService implements OnApplicationBootstrap {
   private handleCommand(interaction: ChatInputCommandInteraction) {
     const { LOGGER } = this
 
-    const subCommandGroup = interaction.options.getSubcommandGroup()
-    const subCommand = interaction.options.getSubcommand()
+    const subCommandGroup = interaction.options.getSubcommandGroup(false)
+    const subCommand = interaction.options.getSubcommand(false)
     const command = interaction.commandName
     if (subCommandGroup) {
       LOGGER.verbose(
