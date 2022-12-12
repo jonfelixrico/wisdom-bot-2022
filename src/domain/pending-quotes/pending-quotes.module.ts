@@ -7,6 +7,7 @@ import { PendingQuoteDownstreamService } from './services/pending-quote-downstre
 import { PendingQuoteMessageGeneratorService } from './services/pending-quote-message-generator/pending-quote-message-generator.service'
 import { PendingQuoteExpirationService } from './services/pending-quote-expiration/pending-quote-expiration.service'
 import { PendingQuoteApprovalService } from './services/pending-quote-approval/pending-quote-approval.service'
+import { ExpiredQuoteSweeperService } from './services/expired-quote-sweeper/expired-quote-sweeper.service'
 
 @Module({
   providers: [
@@ -16,6 +17,7 @@ import { PendingQuoteApprovalService } from './services/pending-quote-approval/p
     PendingQuoteMessageGeneratorService,
     PendingQuoteExpirationService,
     PendingQuoteApprovalService,
+    ExpiredQuoteSweeperService,
   ],
   imports: [DiscordModule, ApiModule],
 })
