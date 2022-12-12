@@ -54,12 +54,14 @@ export class PendingQuoteDownstreamService {
     LOGGER.debug(`Handling the approval of quote ${quote.id}`)
 
     try {
+      // mark as approved in the API
       await this.api.finalizeStatus({
         quoteId: quote.id,
         status: 'APPROVED',
       })
       LOGGER.debug(`Finalized status of quote ${quote.id} as approved`)
 
+      // update the original submit message to mark as approved
       const message = await this.msgSvc.getMessage(quote)
       await message.edit(
         await this.msgGen.generateForApproval({
@@ -68,6 +70,7 @@ export class PendingQuoteDownstreamService {
         }),
       )
 
+      // send a separate message to announce that it has been approved
       await message.channel.send({
         reply: {
           messageReference: message,
