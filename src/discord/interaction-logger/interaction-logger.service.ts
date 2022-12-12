@@ -4,7 +4,7 @@ import { sprintf } from 'sprintf'
 
 function formatMessage(interaction: Interaction, content: string) {
   return sprintf(
-    '[user:%s][interaction: %s][server: %s][channel: %s] %s',
+    '[user:%s][interaction:%s][server:%s][channel:%s] %s',
     interaction.user.id,
     interaction.id,
     interaction.guild.id,
