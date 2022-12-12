@@ -3,6 +3,7 @@ import { concatMap, debounceTime, from, groupBy, mergeMap, Subject } from 'rxjs'
 import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pending-quote-dto.interface'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { MessageService } from 'src/discord/services/message/message.service'
+import { PendingQuoteApprovalService } from '../../pending-quote-approval/pending-quote-approval.service'
 import { PendingQuoteExpirationService } from '../pending-quote-expiration/pending-quote-expiration.service'
 import { PendingQuoteMessageGeneratorService } from '../pending-quote-message-generator/pending-quote-message-generator.service'
 
@@ -16,6 +17,7 @@ export class PendingQuoteDownstreamService {
     private api: PendingQuoteApiService,
     private msgGen: PendingQuoteMessageGeneratorService,
     private msgSvc: MessageService,
+    private approveSvc: PendingQuoteApprovalService,
     private expireSvc: PendingQuoteExpirationService,
   ) {
     this.initListener()
@@ -54,14 +56,12 @@ export class PendingQuoteDownstreamService {
     LOGGER.debug(`Handling the approval of quote ${quote.id}`)
 
     try {
-      // mark as approved in the API
       await this.api.finalizeStatus({
         quoteId: quote.id,
         status: 'APPROVED',
       })
       LOGGER.debug(`Finalized status of quote ${quote.id} as approved`)
 
-      // update the original submit message to mark as approved
       const message = await this.msgSvc.getMessage(quote)
       await message.edit(
         await this.msgGen.generateForApproval({
@@ -70,7 +70,6 @@ export class PendingQuoteDownstreamService {
         }),
       )
 
-      // send a separate message to announce that it has been approved
       await message.channel.send({
         reply: {
           messageReference: message,
@@ -86,6 +85,25 @@ export class PendingQuoteDownstreamService {
   }
 
   private async handle(quoteId: string) {
+    const quoteData = await this.api.get({ quoteId })
+    if (!quoteData) {
+      this.LOGGER.warn(`Did not find pending quote ${quoteId}`)
+      return
+    }
+
+    if (new Date() > new Date(quoteData.expirationDt)) {
+      await this.expireSvc.processExpiration(quoteData)
+    } else if (
+      // check if quote has reached enough numbers of upvotes
+      Object.values(quoteData.votes ?? {}).length >= quoteData.requiredVoteCount
+    ) {
+      await this.approveSvc.processApproval(quoteData)
+    } else {
+      await this.reRenderOngoing(quoteData)
+    }
+  }
+
+  private async handleWrapped(quoteId: string) {
     this.LOGGER.debug(`Handling ${quoteId}`)
     try {
       const quoteData = await this.api.get({ quoteId })
