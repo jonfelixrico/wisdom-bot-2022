@@ -1,0 +1,11 @@
+services:
+  bot:
+    # points to the root of this repository
+    build: ../../.
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - LOGS_FILENAME=var/log/wisdom-bot/nest-%DATE%.log
+    volumes:
+      - ./logs/tomcat:/var/log/wisdom-bot

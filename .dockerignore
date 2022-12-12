@@ -1,0 +1,14 @@
+# compiled output
+/dist
+/node_modules
+npm-debug.log
+
+# docker stuff
+Dockerfile
+.dockerignore
+
+/test
+/deploy
+/logs
+
+README.md
