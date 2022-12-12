@@ -6,7 +6,7 @@ import {
   WISDOM_COMMAND_NAME,
 } from 'scripts/command-registration/command-defs/wisdom.subcommands'
 import { ApiInfoService } from 'src/api/api-info/api-info.service'
-import { AppInfoService } from 'src/system/app-info/app-info.service'
+import { AppInfoService } from 'src/domain/system/services/app-info/app-info.service'
 
 @Injectable()
 export class AboutHandlerService {
