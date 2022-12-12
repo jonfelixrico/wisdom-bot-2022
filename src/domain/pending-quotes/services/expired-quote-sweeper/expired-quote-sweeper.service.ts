@@ -4,6 +4,10 @@ import { Client } from 'discord.js'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { PendingQuoteExpirationService } from '../pending-quote-expiration/pending-quote-expiration.service'
 
+/**
+ * This is a background routine service which will check for expired quotes periodically.
+ * Found expired quotes will be processed accordingly.
+ */
 @Injectable()
 export class ExpiredQuoteSweeperService implements OnApplicationBootstrap {
   private readonly LOGGER = new Logger(ExpiredQuoteSweeperService.name)
