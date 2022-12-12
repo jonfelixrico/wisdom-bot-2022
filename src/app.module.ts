@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common'
 import { SlashInteractionsModule } from './slash-interactions/slash-interactions.module'
 import { DiscordModule } from './discord/discord.module'
 import { ConfigModule } from '@nestjs/config'
-import { SystemModule } from './system/system.module'
 import { ApiModule } from './api/api.module'
 import { PendingQuotesModule } from './domain/pending-quotes/pending-quotes.module'
 import { ScheduleModule } from '@nestjs/schedule'
+import { QuotesModule } from './domain/quotes/quotes.module'
 
 @Module({
   imports: [
@@ -15,10 +15,10 @@ import { ScheduleModule } from '@nestjs/schedule'
     }),
     SlashInteractionsModule,
     DiscordModule,
-    SystemModule,
     ApiModule,
     PendingQuotesModule,
     ScheduleModule.forRoot(),
+    QuotesModule,
   ],
   controllers: [],
   providers: [],
