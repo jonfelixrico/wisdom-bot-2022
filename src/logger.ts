@@ -1,6 +1,7 @@
 import { WinstonModule, utilities } from 'nest-winston'
 import * as winston from 'winston'
 import 'winston-daily-rotate-file'
+import 'dotenv-defaults/config'
 
 export const WINSTON_LOGGER = WinstonModule.createLogger({
   transports: [
@@ -16,7 +17,7 @@ export const WINSTON_LOGGER = WinstonModule.createLogger({
       ),
     }),
     new winston.transports.DailyRotateFile({
-      filename: 'logs/nest-%DATE%.log',
+      filename: process.env.LOGS_FILENAME,
       datePattern: 'YYYY-MM-DD',
       zippedArchive: true,
       maxSize: '20m',
