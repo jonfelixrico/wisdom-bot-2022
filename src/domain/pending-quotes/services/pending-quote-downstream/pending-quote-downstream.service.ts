@@ -3,7 +3,7 @@ import { concatMap, debounceTime, from, groupBy, mergeMap, Subject } from 'rxjs'
 import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pending-quote-dto.interface'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { MessageService } from 'src/discord/services/message/message.service'
-import { PendingQuoteExpirationService } from '../../pending-quote-expiration/pending-quote-expiration.service'
+import { PendingQuoteExpirationService } from '../pending-quote-expiration/pending-quote-expiration.service'
 import { PendingQuoteMessageGeneratorService } from '../pending-quote-message-generator/pending-quote-message-generator.service'
 
 @Injectable()
