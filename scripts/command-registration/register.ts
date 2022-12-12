@@ -1,15 +1,14 @@
-// import { ABOUT_COMMAND } from './command-defs/about.command'
-// import { RECEIVE_COMMAND } from './command-defs/receive.command'
-// import { SUBMIT_COMMAND } from './command-defs/submit.command'
+import { ABOUT_COMMAND } from './command-defs/about.command'
+import { RECEIVE_COMMAND } from './command-defs/receive.command'
+import { SUBMIT_COMMAND } from './command-defs/submit.command'
 import { WISDOM_SUBCOMMANDS } from './command-defs/wisdom.subcommands'
 import { sendToApi } from './executor'
 import { CommandBuilder } from './types'
 
 const commands: CommandBuilder[] = [
-  // TODO uncomment on release
-  // ABOUT_COMMAND,
-  // RECEIVE_COMMAND,
-  // SUBMIT_COMMAND,
+  ABOUT_COMMAND,
+  RECEIVE_COMMAND,
+  SUBMIT_COMMAND,
   WISDOM_SUBCOMMANDS,
 ]
 
