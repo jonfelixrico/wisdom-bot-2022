@@ -34,4 +34,6 @@ export const WINSTON_LOGGER = WinstonModule.createLogger({
       ),
     }),
   ],
+  // TODO make this use env vars instead
+  level: 'debug',
 })
