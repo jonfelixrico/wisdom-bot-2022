@@ -1,12 +1,11 @@
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { GetPendingQuoteRespDto } from 'src/api/pending-quote-api/dto/get-pending-quote-dto.interface'
 import { PendingQuoteApiService } from 'src/api/pending-quote-api/pending-quote-api.service'
 import { MessageService } from 'src/discord/services/message/message.service'
-import { PendingQuoteMessageGeneratorService } from '../services/pending-quote-message-generator/pending-quote-message-generator.service'
-import { Cron } from '@nestjs/schedule'
+import { PendingQuoteMessageGeneratorService } from '../pending-quote-message-generator/pending-quote-message-generator.service'
 import { Client, Message } from 'discord.js'
 @Injectable()
-export class PendingQuoteExpirationService implements OnApplicationBootstrap {
+export class PendingQuoteExpirationService {
   private readonly LOGGER = new Logger(PendingQuoteExpirationService.name)
 
   constructor(
@@ -77,45 +76,5 @@ export class PendingQuoteExpirationService implements OnApplicationBootstrap {
         e,
       )
     }
-  }
-
-  private async doExpiredQuoteSweep(serverId: string) {
-    const { LOGGER } = this
-
-    const expiredQuotes = await this.api.getExpiredQuotes({ serverId })
-    for (const quote of expiredQuotes) {
-      try {
-        await this.processExpiration(quote)
-      } catch (e) {
-        LOGGER.error(
-          `Uncaught exception while running the expiration process for quote ${quote.id}`,
-          e,
-        )
-      }
-    }
-  }
-
-  @Cron('0/15 * * * *')
-  private async runExpiredQuoteRoutine() {
-    const { LOGGER } = this
-
-    LOGGER.log('Running routine for sweeping for expired quotes')
-    const guildIds = Array.from(this.client.guilds.cache.keys())
-    for (const guildId of guildIds) {
-      LOGGER.verbose(`Starting sweep for ${guildId}`)
-
-      try {
-        await this.doExpiredQuoteSweep(guildId)
-      } catch (e) {
-        LOGGER.error(`Expired quote sweep failed for server ${guildId}`, e)
-      }
-
-      LOGGER.verbose(`Finished sweep for ${guildId}`)
-    }
-    LOGGER.log('Finished the sweep routine')
-  }
-
-  onApplicationBootstrap() {
-    this.runExpiredQuoteRoutine()
   }
 }

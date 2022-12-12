@@ -5,8 +5,9 @@ import { UpvoteHandlerService } from './button-interactions/upvote-handler/upvot
 import { SubmitHandlerService } from './slash-interactions/submit-handler/submit-handler.service'
 import { PendingQuoteDownstreamService } from './services/pending-quote-downstream/pending-quote-downstream.service'
 import { PendingQuoteMessageGeneratorService } from './services/pending-quote-message-generator/pending-quote-message-generator.service'
-import { PendingQuoteExpirationService } from './pending-quote-expiration/pending-quote-expiration.service'
-import { PendingQuoteApprovalService } from './pending-quote-approval/pending-quote-approval.service'
+import { PendingQuoteExpirationService } from './services/pending-quote-expiration/pending-quote-expiration.service'
+import { PendingQuoteApprovalService } from './services/pending-quote-approval/pending-quote-approval.service'
+import { ExpiredQuoteSweeperService } from './services/expired-quote-sweeper/expired-quote-sweeper.service'
 
 @Module({
   providers: [
@@ -16,6 +17,7 @@ import { PendingQuoteApprovalService } from './pending-quote-approval/pending-qu
     PendingQuoteMessageGeneratorService,
     PendingQuoteExpirationService,
     PendingQuoteApprovalService,
+    ExpiredQuoteSweeperService,
   ],
   imports: [DiscordModule, ApiModule],
 })
