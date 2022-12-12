@@ -1,20 +1,11 @@
 services:
-  server:
-    depends_on:
-      - mongo
+  bot:
     # points to the root of this repository
     build: ../../.
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      - spring.data.mongodb.uri=mongodb://root:password@mongo:27017
-      - spring.data.mongodb.database=wisdom
-      - server.tomcat.basedir=/var/log/wisdom-core/tomcat
-      - logging.file.path=/var/log/wisdom-core/app
+      - LOGS_FILENAME=var/log/wisdom-bot/nest-%DATE%.log
     volumes:
       - ./logs/tomcat:/var/log/wisdom-bot
-    ports:
-      - 9000:9000
-volumes:
-  mongo-data:
