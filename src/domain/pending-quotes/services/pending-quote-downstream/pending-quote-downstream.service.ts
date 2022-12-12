@@ -83,28 +83,25 @@ export class PendingQuoteDownstreamService {
   }
 
   private async handle(quoteId: string) {
-    const quoteData = await this.api.get({ quoteId })
-    if (!quoteData) {
-      this.LOGGER.warn(`Did not find pending quote ${quoteId}`)
-      return
-    }
-
-    if (new Date() > new Date(quoteData.expirationDt)) {
-      await this.expireSvc.processExpiration(quoteData)
-    } else if (
-      // check if quote has reached enough numbers of upvotes
-      Object.values(quoteData.votes ?? {}).length >= quoteData.requiredVoteCount
-    ) {
-      await this.processApproval(quoteData)
-    } else {
-      await this.reRenderOngoing(quoteData)
-    }
-  }
-
-  private async handleWrapped(quoteId: string) {
     this.LOGGER.debug(`Handling ${quoteId}`)
     try {
-      await this.handle(quoteId)
+      const quoteData = await this.api.get({ quoteId })
+      if (!quoteData) {
+        this.LOGGER.warn(`Did not find pending quote ${quoteId}`)
+        return
+      }
+
+      if (new Date() > new Date(quoteData.expirationDt)) {
+        await this.expireSvc.processExpiration(quoteData)
+      } else if (
+        // check if quote has reached enough numbers of upvotes
+        Object.values(quoteData.votes ?? {}).length >=
+        quoteData.requiredVoteCount
+      ) {
+        await this.processApproval(quoteData)
+      } else {
+        await this.reRenderOngoing(quoteData)
+      }
     } catch (e) {
       this.LOGGER.error(`Uncaught exception while processing ${quoteId}`, e)
     }
@@ -124,7 +121,7 @@ export class PendingQuoteDownstreamService {
             // debounceTime + groupBy will debounce calls per quote id
             debounceTime(2500),
             // this is to handle debounce emits sequentially
-            concatMap((id) => from(this.handleWrapped(id))),
+            concatMap((id) => from(this.handle(id))),
           )
         }),
       )
