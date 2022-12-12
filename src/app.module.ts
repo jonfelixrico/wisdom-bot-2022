@@ -11,7 +11,7 @@ import { SystemModule } from './domain/system/system.module'
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.development.env'],
+      envFilePath: ['.env', '.env.defaults'],
     }),
     DiscordModule,
     ApiModule,
