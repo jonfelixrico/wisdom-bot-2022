@@ -16,8 +16,6 @@ export function generateReply(data: ReplyData) {
     description: [
       `**"${escapeMarkdown(data.content)}"**`,
       `- <@${data.authorId}>, ${data.year}`,
-      '',
-      `_Received by <@${data.receiverId}>_`,
     ].join('\n'),
 
     author: {
