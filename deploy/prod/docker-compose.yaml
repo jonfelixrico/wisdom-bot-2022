@@ -8,4 +8,4 @@ services:
     environment:
       - LOGS_FILENAME=/var/log/wisdom-bot/nest-%DATE%.log
     volumes:
-      - ./logs/tomcat:/var/log/wisdom-bot
+      - ./logs:/var/log/wisdom-bot
