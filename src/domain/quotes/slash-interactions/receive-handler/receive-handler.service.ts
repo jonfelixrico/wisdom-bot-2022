@@ -56,8 +56,7 @@ export class ReceiveHandlerService {
     const responseData: ReplyData = {
       ...randomQuote,
       receiverId: interaction.user.id,
-      year: new Date().getFullYear(),
-      // TODO retrieve author icon url
+      year: new Date(randomQuote.submitDt).getFullYear(),
 
       receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
       quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
