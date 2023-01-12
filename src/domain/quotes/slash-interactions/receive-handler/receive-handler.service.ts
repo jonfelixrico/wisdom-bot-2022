@@ -15,6 +15,7 @@ import {
   WISDOM_RECEIVE_SUBCOMMAND_NAME,
 } from 'scripts/command-registration/command-defs/wisdom.subcommands'
 import { sprintf } from 'sprintf'
+import { GetRandomQuoteOutput } from 'src/api/quote-api/model/get-random-quote-io.interface'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import {
   generateErrorReply,
@@ -65,6 +66,21 @@ export class ReceiveHandlerService {
     )
   }
 
+  private async generateReplyData(
+    quote: GetRandomQuoteOutput,
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReplyData> {
+    const author = await this.getUser(interaction.guild, quote.authorId)
+    return {
+      ...quote,
+      receiverId: interaction.user.id,
+      year: new Date(quote.submitDt).getFullYear(),
+
+      receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
+      quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
+    }
+  }
+
   private async handle(interaction: ChatInputCommandInteraction) {
     const { guildId } = interaction
 
@@ -87,26 +103,16 @@ export class ReceiveHandlerService {
       return
     }
 
-    const author = await this.getUser(interaction.guild, randomQuote.authorId)
-    const responseData: ReplyData = {
-      ...randomQuote,
-      receiverId: interaction.user.id,
-      year: new Date(randomQuote.submitDt).getFullYear(),
-
-      receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
-      quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
-    }
+    const replyData = await this.generateReplyData(randomQuote, interaction)
 
     const options: InteractionReplyOptions = {
-      embeds: [generateReply(responseData)],
+      embeds: [generateReply(replyData)],
     }
-
     if (this.isPanelButtonEnabled) {
       options.components = [
         this.generatePanelLinkButton(guildId, randomQuote.id),
       ]
     }
-
     const reply = await interaction.reply({
       ...options,
       fetchReply: true,
@@ -126,7 +132,7 @@ export class ReceiveHandlerService {
       )
 
       reply.edit({
-        embeds: [generateErrorReply(responseData)],
+        embeds: [generateErrorReply(replyData)],
       })
     }
   }
