@@ -1,10 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ChatInputCommandInteraction, Client, Guild } from 'discord.js'
+import { ConfigService } from '@nestjs/config'
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChatInputCommandInteraction,
+  Client,
+  Guild,
+} from 'discord.js'
 import { RECEIVE_COMMAND_NAME } from 'scripts/command-registration/command-defs/receive.command'
 import {
   WISDOM_COMMAND_NAME,
   WISDOM_RECEIVE_SUBCOMMAND_NAME,
 } from 'scripts/command-registration/command-defs/wisdom.subcommands'
+import { sprintf } from 'sprintf'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
 import {
   generateErrorReply,
@@ -16,7 +25,11 @@ import {
 export class ReceiveHandlerService {
   private readonly LOGGER = new Logger(ReceiveHandlerService.name)
 
-  constructor(private api: QuoteApiService, private client: Client) {}
+  constructor(
+    private api: QuoteApiService,
+    private client: Client,
+    private cfg: ConfigService,
+  ) {}
 
   private async getUser(guild: Guild, userId: string) {
     try {
@@ -28,6 +41,23 @@ export class ReceiveHandlerService {
       )
       return null
     }
+  }
+
+  private generatePanelLinkButton(serverId: string, quoteId: string) {
+    const url = new URL(
+      sprintf(this.cfg.getOrThrow<string>('PANEL_RECEIVE_PREVIEW_PATH'), {
+        serverId,
+        quoteId,
+      }),
+      this.cfg.getOrThrow<string>('PANEL_BASE_URL'),
+    ).toString()
+
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setLabel('Show in the Panel')
+        .setStyle(ButtonStyle.Link)
+        .setURL(url),
+    )
   }
 
   private async handle(interaction: ChatInputCommandInteraction) {
@@ -65,6 +95,7 @@ export class ReceiveHandlerService {
     const reply = await interaction.reply({
       fetchReply: true,
       embeds: [generateReply(responseData)],
+      components: [this.generatePanelLinkButton(guildId, randomQuote.id)],
     })
 
     try {
