@@ -7,6 +7,7 @@ import {
   ChatInputCommandInteraction,
   Client,
   Guild,
+  InteractionReplyOptions,
 } from 'discord.js'
 import { RECEIVE_COMMAND_NAME } from 'scripts/command-registration/command-defs/receive.command'
 import {
@@ -41,6 +42,10 @@ export class ReceiveHandlerService {
       )
       return null
     }
+  }
+
+  private get isPanelButtonEnabled(): boolean {
+    return this.cfg.get<boolean>('PANEL_ENABLE_RECEIVE_BUTTON') ?? false
   }
 
   private generatePanelLinkButton(serverId: string, quoteId: string) {
@@ -92,10 +97,19 @@ export class ReceiveHandlerService {
       quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
     }
 
+    const options: InteractionReplyOptions = {
+      embeds: [generateReply(responseData)],
+    }
+
+    if (this.isPanelButtonEnabled) {
+      options.components = [
+        this.generatePanelLinkButton(guildId, randomQuote.id),
+      ]
+    }
+
     const reply = await interaction.reply({
       fetchReply: true,
-      embeds: [generateReply(responseData)],
-      components: [this.generatePanelLinkButton(guildId, randomQuote.id)],
+      ...options,
     })
 
     try {
