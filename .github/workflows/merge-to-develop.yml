@@ -22,5 +22,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags:
-            - jonfelixrico/wisdom-bot:${{steps.package-version.outputs.current-version}}-develop
+          tags: jonfelixrico/wisdom-bot:${{steps.package-version.outputs.current-version}}-develop
