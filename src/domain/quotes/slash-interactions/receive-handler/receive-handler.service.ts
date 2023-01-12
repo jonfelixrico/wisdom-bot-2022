@@ -1,11 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ChatInputCommandInteraction, Client, Guild } from 'discord.js'
+import { ConfigService } from '@nestjs/config'
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChatInputCommandInteraction,
+  Client,
+  Guild,
+  InteractionReplyOptions,
+} from 'discord.js'
 import { RECEIVE_COMMAND_NAME } from 'scripts/command-registration/command-defs/receive.command'
 import {
   WISDOM_COMMAND_NAME,
   WISDOM_RECEIVE_SUBCOMMAND_NAME,
 } from 'scripts/command-registration/command-defs/wisdom.subcommands'
+import { sprintf } from 'sprintf'
+import { GetRandomQuoteOutput } from 'src/api/quote-api/model/get-random-quote-io.interface'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
+import { getMemberAvatarUrl } from 'src/utils/avatar.util'
 import {
   generateErrorReply,
   generateReply,
@@ -16,7 +28,11 @@ import {
 export class ReceiveHandlerService {
   private readonly LOGGER = new Logger(ReceiveHandlerService.name)
 
-  constructor(private api: QuoteApiService, private client: Client) {}
+  constructor(
+    private api: QuoteApiService,
+    private client: Client,
+    private cfg: ConfigService,
+  ) {}
 
   private async getUser(guild: Guild, userId: string) {
     try {
@@ -27,6 +43,45 @@ export class ReceiveHandlerService {
         e,
       )
       return null
+    }
+  }
+
+  private get isPanelButtonEnabled(): boolean {
+    return this.cfg.get<boolean>('PANEL_ENABLE_RECEIVE_BUTTON') ?? false
+  }
+
+  private generatePanelLinkButton(serverId: string, quoteId: string) {
+    const url = new URL(
+      sprintf(this.cfg.getOrThrow<string>('PANEL_RECEIVE_PREVIEW_PATH'), {
+        serverId,
+        quoteId,
+      }),
+      this.cfg.getOrThrow<string>('PANEL_BASE_URL'),
+    ).toString()
+
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setLabel('Show in the Panel')
+        .setStyle(ButtonStyle.Link)
+        .setURL(url),
+    )
+  }
+
+  private async generateReplyData(
+    quote: GetRandomQuoteOutput,
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReplyData> {
+    const author = await this.getUser(interaction.guild, quote.authorId)
+    return {
+      ...quote,
+      receiverId: interaction.user.id,
+      year: new Date(quote.submitDt).getFullYear(),
+
+      receiverIconUrl: getMemberAvatarUrl(
+        interaction.guildId,
+        interaction.member,
+      ),
+      quoteAuthorIconUrl: getMemberAvatarUrl(interaction.guildId, author),
     }
   }
 
@@ -52,19 +107,19 @@ export class ReceiveHandlerService {
       return
     }
 
-    const author = await this.getUser(interaction.guild, randomQuote.authorId)
-    const responseData: ReplyData = {
-      ...randomQuote,
-      receiverId: interaction.user.id,
-      year: new Date(randomQuote.submitDt).getFullYear(),
+    const replyData = await this.generateReplyData(randomQuote, interaction)
 
-      receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
-      quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
+    const options: InteractionReplyOptions = {
+      embeds: [generateReply(replyData)],
     }
-
+    if (this.isPanelButtonEnabled) {
+      options.components = [
+        this.generatePanelLinkButton(guildId, randomQuote.id),
+      ]
+    }
     const reply = await interaction.reply({
+      ...options,
       fetchReply: true,
-      embeds: [generateReply(responseData)],
     })
 
     try {
@@ -81,7 +136,7 @@ export class ReceiveHandlerService {
       )
 
       reply.edit({
-        embeds: [generateErrorReply(responseData)],
+        embeds: [generateErrorReply(replyData)],
       })
     }
   }

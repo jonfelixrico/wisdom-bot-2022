@@ -17,6 +17,7 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
+  discord-api-types: ^0.37.28
   discord.js: ^14.5.0
   dotenv-defaults: ^5.0.2
   eslint: ^8.0.1
@@ -46,6 +47,7 @@ dependencies:
   '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   '@nestjs/schedule': 2.1.0_zysgbzrbqurgi5bpxpfkrj3lie
+  discord-api-types: 0.37.28
   discord.js: 14.5.0
   dotenv-defaults: 5.0.2
   nest-winston: 1.8.0_5rqplkgjo3qfqjv34ceyw5sx3m
@@ -553,7 +555,7 @@ packages:
     dependencies:
       '@discordjs/util': 0.1.0
       '@sapphire/shapeshift': 3.7.0
-      discord-api-types: 0.37.12
+      discord-api-types: 0.37.28
       fast-deep-equal: 3.1.3
       ts-mixer: 6.0.1
       tslib: 2.4.0
@@ -572,7 +574,7 @@ packages:
       '@discordjs/util': 0.1.0
       '@sapphire/async-queue': 1.5.0
       '@sapphire/snowflake': 3.2.2
-      discord-api-types: 0.37.12
+      discord-api-types: 0.37.28
       file-type: 18.0.0
       tslib: 2.4.0
       undici: 5.11.0
@@ -2319,8 +2321,8 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /discord-api-types/0.37.12:
-    resolution: {integrity: sha512-SMBP4V6/A9mE7shBQAiTxNWnQlYTdiKMGvc7G23neayxaTJeFYh5FviJSWUa0BTdXcph1h/jT03Nbyv5XgZkzw==}
+  /discord-api-types/0.37.28:
+    resolution: {integrity: sha512-K0fw7m7km9th3dCQ2AR90q/FwX3uAj+OLc+Zuo39VY9vCn0Ux/iObM4y1zJYIH3vTc+QlrksVErUvyeONjOKMQ==}
     dev: false
 
   /discord.js/14.5.0:
@@ -2332,7 +2334,7 @@ packages:
       '@discordjs/rest': 1.3.0
       '@sapphire/snowflake': 3.2.2
       '@types/ws': 8.5.3
-      discord-api-types: 0.37.12
+      discord-api-types: 0.37.28
       fast-deep-equal: 3.1.3
       lodash.snakecase: 4.1.1
       tslib: 2.4.0
