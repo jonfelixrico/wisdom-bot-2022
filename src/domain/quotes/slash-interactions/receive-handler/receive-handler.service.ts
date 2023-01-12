@@ -108,8 +108,8 @@ export class ReceiveHandlerService {
     }
 
     const reply = await interaction.reply({
-      fetchReply: true,
       ...options,
+      fetchReply: true,
     })
 
     try {
