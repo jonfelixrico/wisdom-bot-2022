@@ -17,6 +17,7 @@ import {
 import { sprintf } from 'sprintf'
 import { GetRandomQuoteOutput } from 'src/api/quote-api/model/get-random-quote-io.interface'
 import { QuoteApiService } from 'src/api/quote-api/quote-api.service'
+import { getMemberAvatarUrl } from 'src/utils/avatar.util'
 import {
   generateErrorReply,
   generateReply,
@@ -76,8 +77,11 @@ export class ReceiveHandlerService {
       receiverId: interaction.user.id,
       year: new Date(quote.submitDt).getFullYear(),
 
-      receiverIconUrl: (await interaction.user.displayAvatarURL()) || undefined,
-      quoteAuthorIconUrl: (await author.displayAvatarURL()) || undefined,
+      receiverIconUrl: getMemberAvatarUrl(
+        interaction.guildId,
+        interaction.member,
+      ),
+      quoteAuthorIconUrl: getMemberAvatarUrl(interaction.guildId, author),
     }
   }
 
