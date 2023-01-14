@@ -19,6 +19,8 @@ services:
     image: jonfelixrico/wisdom-core:latest
     # image: jonfelixrico/wisdom-core:alpha
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       - spring.data.mongodb.uri=mongodb://root:password@mongo:27017
       - spring.data.mongodb.database=wisdom
