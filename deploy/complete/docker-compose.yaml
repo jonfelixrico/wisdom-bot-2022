@@ -2,8 +2,8 @@ services:
   bot:
     depends_on:
       - core
-    image: jonfelixrico/wisdom-bot:latest
-    # build: jonfelixrico/wisdom-bot:alpha
+    # image: jonfelixrico/wisdom-bot:latest
+    build: jonfelixrico/wisdom-bot:alpha
     restart: unless-stopped
     env_file:
       - .env
@@ -16,8 +16,8 @@ services:
   core:
     depends_on:
       - mongo
-    image: jonfelixrico/wisdom-core:latest
-    # image: jonfelixrico/wisdom-core:alpha
+    # image: jonfelixrico/wisdom-core:latest
+    image: jonfelixrico/wisdom-core:alpha
     restart: unless-stopped
     env_file:
       - .env
