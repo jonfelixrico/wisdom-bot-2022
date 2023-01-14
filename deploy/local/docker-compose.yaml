@@ -1,7 +1,7 @@
 services:
   bot:
-    build: jonfelixrico/wisdom-bot:latest
-    # build: jonfelixrico/wisdom-bot:alpha
+    # points to the root of this repository
+    build: ../../.
     restart: unless-stopped
     env_file:
       - .env
