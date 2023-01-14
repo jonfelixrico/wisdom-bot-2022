@@ -3,7 +3,7 @@ services:
     depends_on:
       - core
     # image: jonfelixrico/wisdom-bot:latest
-    build: jonfelixrico/wisdom-bot:alpha
+    image: jonfelixrico/wisdom-bot:alpha
     restart: unless-stopped
     env_file:
       - .env
