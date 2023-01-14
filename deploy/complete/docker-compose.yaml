@@ -29,7 +29,7 @@ services:
     volumes:
       - ./logs:/var/log/wisdom-core
     ports:
-      - 9999:9000
+      - 9000:9000
 
   mongo:
     image: mongo
