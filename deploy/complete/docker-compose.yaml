@@ -1,0 +1,48 @@
+services:
+  bot:
+    depends_on:
+      - core
+    # image: jonfelixrico/wisdom-bot:latest
+    image: jonfelixrico/wisdom-bot:alpha
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - LOGS_FILENAME=/var/log/wisdom-bot/nest-%DATE%.log
+      - API_BASE_URL=http://core:9000
+    volumes:
+      - ./logs:/var/log/wisdom-bot
+
+  core:
+    depends_on:
+      - mongo
+    # image: jonfelixrico/wisdom-core:latest
+    image: jonfelixrico/wisdom-core:alpha
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - spring.data.mongodb.uri=mongodb://root:password@mongo:27017
+      - spring.data.mongodb.database=wisdom
+      - server.tomcat.basedir=/var/log/wisdom-core/tomcat
+      - logging.file.path=/var/log/wisdom-core/app
+    volumes:
+      - ./logs:/var/log/wisdom-core
+    ports:
+      - 9000:9000
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: wisdom
+    volumes:
+      - type: volume
+        source: mongo-data
+        target: /data/db
+    ports:
+      - 9998:27017
+volumes:
+  mongo-data:
