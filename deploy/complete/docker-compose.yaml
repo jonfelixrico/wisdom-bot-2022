@@ -9,7 +9,7 @@ services:
       - .env
     environment:
       - LOGS_FILENAME=/var/log/wisdom-bot/nest-%DATE%.log
-      - API_BASE_URL=http://core
+      - API_BASE_URL=http://core:9000
     volumes:
       - ./logs:/var/log/wisdom-bot
 
