@@ -35,11 +35,11 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
 
       // TODO emit event to update the quote
 
+      await this.downstream.queueForProcessing(quoteId)
       await interaction.reply({
         content: 'Your upvote has been recorded ✅',
         ephemeral: true,
       })
-      await this.downstream.queueForProcessing(quoteId)
     } catch (e) {
       if (e.response?.status === 403) {
         LOGGER.debug(
