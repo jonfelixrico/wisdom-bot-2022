@@ -22,10 +22,6 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
   ) {
     const { LOGGER } = this
 
-    await interaction.deferReply({
-      ephemeral: true,
-    })
-
     try {
       // TODO add checking to see if the user has already voted before
       await this.api.addVote({
@@ -39,7 +35,10 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
 
       // TODO emit event to update the quote
 
-      await interaction.editReply('Your upvote has been recorded ✅')
+      await interaction.reply({
+        content: 'Your upvote has been recorded ✅',
+        ephemeral: true,
+      })
       await this.downstream.queueForProcessing(quoteId)
     } catch (e) {
       if (e.response?.status === 403) {
@@ -52,9 +51,10 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
           e,
         )
 
-        await interaction.editReply(
-          'You have already upvoted this quote before!',
-        )
+        await interaction.reply({
+          content: 'You have already upvoted this quote before!',
+          ephemeral: true,
+        })
         return
       }
 
@@ -66,9 +66,10 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
         ),
         e,
       )
-      await interaction.editReply(
-        'Something went wrong while saving your upvote...',
-      )
+      await interaction.reply({
+        content: 'Something went wrong while saving your upvote...',
+        ephemeral: true,
+      })
     }
   }
 
