@@ -35,7 +35,10 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
 
       // TODO emit event to update the quote
 
-      await interaction.reply('Your upvote has been recorded ✅')
+      await interaction.reply({
+        content: 'Your upvote has been recorded ✅',
+        ephemeral: true,
+      })
       await this.downstream.queueForProcessing(quoteId)
     } catch (e) {
       if (e.response?.status === 403) {
@@ -48,7 +51,10 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
           e,
         )
 
-        await interaction.reply('You have already upvoted this quote before!')
+        await interaction.reply({
+          content: 'You have already upvoted this quote before!',
+          ephemeral: true,
+        })
         return
       }
 
@@ -60,9 +66,10 @@ export class UpvoteHandlerService implements OnApplicationBootstrap {
         ),
         e,
       )
-      await interaction.reply(
-        'Something went wrong while saving your upvote...',
-      )
+      await interaction.reply({
+        content: 'Something went wrong while saving your upvote...',
+        ephemeral: true,
+      })
     }
   }
 
