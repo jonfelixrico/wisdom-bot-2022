@@ -10,9 +10,21 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v6
+
+      - name: Generate version strings
+        uses: './.github/actions/internal-version-string-generator'
+        id: version-generator
+        with:
+          pre-release-label: alpha
+      - name: 'Show generated strings'
+        run: |
+          echo Docker string: ${{ steps.version-generator.outputs.docker }}
+          echo App string: ${{ steps.version-generator.outputs.app }}
+      - name: package.json info
+        uses: jaywcjlove/github-action-package@main
+        with:
+          version: ${{ steps.version-generator.outputs.app }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
@@ -24,4 +36,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/wisdom-bot:${{steps.branch-name.outputs.current_branch}},jonfelixrico/wisdom-bot:alpha
+          tags: jonfelixrico/wisdom-bot:${{ steps.version-generator.outputs.docker }},jonfelixrico/wisdom-bot:alpha
