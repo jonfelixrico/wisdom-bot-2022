@@ -3,7 +3,7 @@ name: Alpha pipeline
 on:
   push:
     branches:
-      - alpha-*
+      - develop-*
 jobs:
   build:
     runs-on: ubuntu-latest
