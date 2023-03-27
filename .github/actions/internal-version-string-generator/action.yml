@@ -1,0 +1,29 @@
+name: 'Internal version string generator'
+description: 'Generate different types of version strings for internal use'
+inputs:
+  pre-release-label:
+    description: The pre-release label
+    required: true
+outputs:
+  docker:
+    description: Version string for docker
+    value: ${{ inputs.pre-release-label }}-${{ steps.semver-parser.outputs.major }}.${{ steps.semver-parser.outputs.minor }}
+  app:
+    description: Version string to be displayed by the app during runtime
+    value: ${{ steps.package-version.outputs.current-version }}-${{ inputs.pre-release-label }}+${{ steps.commit.outputs.short }}
+runs:
+  using: composite
+  steps:
+    - name: Get version from package.json
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@main
+
+    - name: Parse semver string
+      id: semver-parser
+      uses: booxmedialtd/ws-action-parse-semver@v1
+      with:
+        input_string: ${{ steps.package-version.outputs.current-version }}
+
+    - name: Get HEAD commit hash
+      id: commit
+      uses: pr-mpt/actions-commit-hash@v2
