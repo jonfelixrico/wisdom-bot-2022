@@ -9,6 +9,7 @@ outputs:
     value: ${{ steps.semver-parser.outputs.patch }}
   sha:
     description: Contains short Git SHA
+    value: ${{ steps.commit.outputs.short }}
 runs:
   using: composite
   steps:
