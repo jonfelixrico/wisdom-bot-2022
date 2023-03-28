@@ -28,3 +28,8 @@ jobs:
           push: true
           tags: jonfelixrico/wisdom-bot:alpha,jonfelixrico/wisdom-bot:alpha-${{ steps.version-generator.outputs.version }}
           build-args: BUILD_VERSION_OVERRIDE=${{ steps.version-generator.outputs.version }}.${{ steps.version-generator.outputs.patch }}-alpha+${{ steps.version-generator.outputs.sha }}
+
+      - name: Show build version
+        run: |
+          echo Docker tag: alpha-${{ steps.version-generator.outputs.version }}
+          echo App build version: ${{ steps.version-generator.outputs.version }}.${{ steps.version-generator.outputs.patch }}-alpha+${{ steps.version-generator.outputs.sha }}
