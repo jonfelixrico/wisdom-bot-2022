@@ -3,16 +3,18 @@ name: Alpha pipeline
 on:
   push:
     branches:
-      - alpha-*
+      - develop-*
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v6
+
+      - name: Generate version strings
+        uses: './.github/actions/internal-version-string-generator'
+        id: version-generator
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
@@ -24,4 +26,10 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/wisdom-bot:${{steps.branch-name.outputs.current_branch}},jonfelixrico/wisdom-bot:alpha
+          tags: jonfelixrico/wisdom-bot:alpha,jonfelixrico/wisdom-bot:alpha-${{ steps.version-generator.outputs.version }}
+          build-args: BUILD_VERSION_OVERRIDE=${{ steps.version-generator.outputs.version }}.${{ steps.version-generator.outputs.patch }}-alpha+${{ steps.version-generator.outputs.sha }}
+
+      - name: Show build version
+        run: |
+          echo Docker tag: alpha-${{ steps.version-generator.outputs.version }}
+          echo App build version: ${{ steps.version-generator.outputs.version }}.${{ steps.version-generator.outputs.patch }}-alpha+${{ steps.version-generator.outputs.sha }}
