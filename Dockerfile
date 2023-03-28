@@ -24,5 +24,7 @@ COPY --from=build /app/node_modules ./node_modules
 
 # needed so that @nestjs/config can still get the default env file
 COPY .env.defaults ./
+ARG BUILD_VERSION_OVERRIDE=
+ENV BUILD_VERSION $BUILD_VERSION_OVERRIDE
 
 CMD ["node", "dist/src/main.js"]
