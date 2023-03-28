@@ -12,6 +12,7 @@ function clientFactory(cfg: ConfigService) {
     client.on('error', (error) => LOGGER.error(error))
 
     client.once('ready', () => {
+      LOGGER.log('Logged in successfully')
       resolve(client)
     })
     client.login(cfg.getOrThrow(DISCORD_TOKEN)).catch((e) => reject(e))
